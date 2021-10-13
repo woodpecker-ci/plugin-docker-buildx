@@ -21,7 +21,7 @@ func main() {
 	}
 
 	app := &cli.App{
-		Name:    "drone-docker-buildx",
+		Name:    "docker-buildx",
 		Usage:   "build docker container with DinD and buildx",
 		Version: version,
 		Flags:   append(settingsFlags(settings), urfave.Flags()...),

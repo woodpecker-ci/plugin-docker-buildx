@@ -2,8 +2,8 @@ pipeline:
   build:
     image: golang:1.17
     commands:
-      - go build
-      - go test
+      - "[ -z \"${DRONE_TAG}\" ] && BUILD_VERSION=${DRONE_COMMIT_SHA:0:8} || BUILD_VERSION=${DRONE_TAG##v}"
+      - go build -v -a -tags netgo ./cmd/docker-buildx
 
   publish:
     image: plugins/docker
