@@ -3,8 +3,8 @@ package main
 import (
 	"os"
 
+	"codeberg.org/woodpecker-plugins/plugin-docker-buildx/plugin"
 	"github.com/joho/godotenv"
-	"github.com/thegeeklab/drone-docker-buildx/plugin"
 	"github.com/urfave/cli/v2"
 
 	"github.com/drone-plugins/drone-plugin-lib/errors"

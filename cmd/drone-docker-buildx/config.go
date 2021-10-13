@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/thegeeklab/drone-docker-buildx/plugin"
+	"codeberg.org/woodpecker-plugins/plugin-docker-buildx/plugin"
 	"github.com/urfave/cli/v2"
 )
 
@@ -16,7 +16,7 @@ func settingsFlags(settings *plugin.Settings) []cli.Flag {
 		},
 		&cli.StringFlag{
 			Name:        "remote.url",
-			EnvVars:     []string{"DRONE_REMOTE_URL"},
+			EnvVars:     []string{"CI_REMOTE_URL", "DRONE_REMOTE_URL"},
 			Usage:       "sets the git remote url",
 			Destination: &settings.Build.Remote,
 		},
