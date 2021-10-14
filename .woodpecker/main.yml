@@ -1,4 +1,11 @@
+clone:
+  git:
+    image: techknowlogick/drone-git:latest
+
 pipeline:
   publish:
     image: plugins/docker
     repo: foo/bar
+    dry_run: true
+    tags: latest
+    dockerfile: Dockerfile
