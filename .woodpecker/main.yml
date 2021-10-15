@@ -6,7 +6,7 @@ pipeline:
   publish:
     image: plugins/kaniko
     repo: foo/bar
-    dry_run: true
+    no-push: true
     tags: latest
     username: foo
     password: bar
