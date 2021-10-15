@@ -8,4 +8,6 @@ pipeline:
     repo: foo/bar
     dry_run: true
     tags: latest
+    username: foo
+    password: bar
     dockerfile: Dockerfile
