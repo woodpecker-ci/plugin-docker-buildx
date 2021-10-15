@@ -8,4 +8,5 @@ pipeline:
     repo: foo/bar
     no-push: true
     tags: latest
+    username: foo
     dockerfile: Dockerfile
