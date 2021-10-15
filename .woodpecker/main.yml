@@ -8,6 +8,4 @@ pipeline:
     repo: foo/bar
     no-push: true
     tags: latest
-    username: foo
-    password: bar
     dockerfile: Dockerfile
