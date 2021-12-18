@@ -5,8 +5,7 @@ pipeline:
       repo: woodpeckerci/plugin-docker-buildx
       tags: latest
       dockerfile: Dockerfile
-    secrets:
-      - source: docker_username
-        target: plugin_username
-      - source: docker_password
-        target: plugin_password
+      username:
+        from_secret: docker_username
+      password:
+        from_secret: docker_password
