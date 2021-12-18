@@ -5,8 +5,11 @@ clone:
 pipeline:
   publish:
     image: plugins/kaniko
-    repo: foo/bar
-    no-push: true
+    repo: woodpeckerci/plugin-docker-buildx
     tags: latest
-    username: foo
+    secrets:
+      - source: docker_username
+        target: plugin_username
+      - source: docker_password
+        target: plugin_password
     dockerfile: Dockerfile
