@@ -3,7 +3,7 @@ FROM golang:1.17-alpine as build
 COPY . /src
 WORKDIR /src
 
-RUN go build -v -a -tags netgo ./cmd/docker-buildx -o docker-buildx
+RUN go build -v -a -tags netgo -o docker-buildx ./cmd/docker-buildx
 
 FROM docker:20.10-dind
 
