@@ -1,15 +1,12 @@
-clone:
-  git:
-    image: techknowlogick/drone-git:latest
-
 pipeline:
   publish:
     image: plugins/kaniko
-    repo: woodpeckerci/plugin-docker-buildx
-    tags: latest
+    settings:
+      repo: woodpeckerci/plugin-docker-buildx
+      tags: latest
+      dockerfile: Dockerfile
     secrets:
       - source: docker_username
         target: plugin_username
       - source: docker_password
         target: plugin_password
-    dockerfile: Dockerfile
