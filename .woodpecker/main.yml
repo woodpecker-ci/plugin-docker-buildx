@@ -5,7 +5,7 @@ pipeline:
       repo: woodpeckerci/plugin-docker-buildx
       tags: latest
       dockerfile: Dockerfile
-      dryrun: true
+      dry_run: true
     when:
       event: pull_request
 
@@ -21,4 +21,4 @@ pipeline:
         from_secret: docker_password
     when:
       event: [push, tag]
-      branch: main+
+      branch: main
