@@ -1,11 +1,11 @@
 pipeline:
   dryrun:
-    image: plugins/docker
+    image: plugins/kaniko
     settings:
       repo: woodpeckerci/plugin-docker-buildx
       tags: latest
       dockerfile: Dockerfile
-      dry_run: true
+      no_push: true
     when:
       event: pull_request
 
