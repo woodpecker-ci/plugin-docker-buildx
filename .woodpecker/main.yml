@@ -1,4 +1,14 @@
 pipeline:
+  dryrun:
+    image: plugins/kaniko
+    settings:
+      repo: woodpeckerci/plugin-docker-buildx
+      tags: latest
+      dockerfile: Dockerfile
+      no_push: true
+    when:
+      event: pull_request
+
   publish:
     image: plugins/kaniko
     settings:
@@ -9,3 +19,6 @@ pipeline:
         from_secret: docker_username
       password:
         from_secret: docker_password
+    when:
+      event: [push, tag]
+      branch: main
