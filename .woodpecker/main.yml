@@ -13,12 +13,12 @@ pipeline:
     image: plugins/kaniko
     settings:
       repo: woodpeckerci/plugin-docker-buildx
-      tags: latest
+      tags: latest, ${CI_COMMIT_TAG}
       dockerfile: Dockerfile
       username:
         from_secret: docker_username
       password:
         from_secret: docker_password
     when:
-      event: [push, tag]
-      branch: main, cron
+      event: [push, tag, cron]
+      branch: main
