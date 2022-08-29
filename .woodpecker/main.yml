@@ -21,4 +21,4 @@ pipeline:
         from_secret: docker_password
     when:
       event: [push, tag]
-      branch: main
+      branch: main, cron
