@@ -238,5 +238,11 @@ func settingsFlags(settings *plugin.Settings) []cli.Flag {
 			Usage:       "sets target platform for build",
 			Destination: &settings.Build.Platforms,
 		},
+		&cli.StringFlag{
+			Name:        "output",
+			EnvVars:     []string{"PLUGIN_OUTPUT"},
+			Usage:       "sets build output type and destination configuration",
+			Destination: &settings.Build.Output,
+		},
 	}
 }

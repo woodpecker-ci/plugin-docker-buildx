@@ -24,7 +24,7 @@ Woodpecker CI plugin to build multiarch Docker images with buildx. This plugin i
 | `registry`                | `https://index.docker.io/v1/` | sets docker registry to authenticate with
 | `dockerfile`              | `Dockerfile`      | sets dockerfile to use for the image build
 | `tag`/`tags`              | @".tags"          | sets repository tags to use for the image
-| `platforms`               | *none*           | sets target platform for build
+| `platforms`               | *none*            | sets target platform for build
 
 ## Examples
 
@@ -53,6 +53,16 @@ Woodpecker CI plugin to build multiarch Docker images with buildx. This plugin i
       username: ${CI_REPO_OWNER}
       password:
         from_secret: cb_token
+```
+
+```yml
+  docker-build:
+    image: woodpeckerci/plugin-docker-buildx
+    settings:
+      repo: codeberg.org/${CI_REPO_OWNER}/hello
+      registry: codeberg.org
+      dry_run: true
+      output: type=oci,dest=${CI_REPO_OWNER}-hello.tar
 ```
 
 ## Advanced Settings
@@ -86,3 +96,4 @@ Woodpecker CI plugin to build multiarch Docker images with buildx. This plugin i
 | `purge`                   | `true`            | enables cleanup of the docker environment at the end of a build
 | `no_cache`                | `false`           | disables the usage of cached intermediate containers
 | `add_host`                | *none*            | sets additional host:ip mapping
+| `output`                  | *none*            | sets build output in format `type=<type>[,<key>=<value>]`

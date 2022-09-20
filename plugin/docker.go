@@ -111,6 +111,9 @@ func commandBuild(build Build, dryrun bool) *exec.Cmd {
 	if build.Target != "" {
 		args = append(args, "--target", build.Target)
 	}
+	if build.Output != "" {
+		args = append(args, "--output", build.Output)
+	}
 	if build.Quiet {
 		args = append(args, "--quiet")
 	}

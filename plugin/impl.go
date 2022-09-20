@@ -52,6 +52,7 @@ type Build struct {
 	Args       cli.StringSlice // Docker build args
 	ArgsEnv    cli.StringSlice // Docker build args from env
 	Target     string          // Docker build target
+	Output     string          // Docker build output
 	Pull       bool            // Docker build pull
 	CacheFrom  cli.StringSlice // Docker build cache-from
 	Compress   bool            // Docker build compress
@@ -120,10 +121,10 @@ func (p *Plugin) Execute() error {
 
 	// Create Auth Config File
 	if p.settings.Login.Config != "" {
-		os.MkdirAll(dockerHome, 0600)
+		os.MkdirAll(dockerHome, 0o600)
 
 		path := filepath.Join(dockerHome, "config.json")
-		err := os.WriteFile(path, []byte(p.settings.Login.Config), 0600)
+		err := os.WriteFile(path, []byte(p.settings.Login.Config), 0o600)
 		if err != nil {
 			return fmt.Errorf("error writing config.json: %s", err)
 		}
@@ -139,7 +140,7 @@ func (p *Plugin) Execute() error {
 	}
 
 	if p.settings.Daemon.BuildkitConfig != "" {
-		err := os.WriteFile(buildkitConfig, []byte(p.settings.Daemon.BuildkitConfig), 0600)
+		err := os.WriteFile(buildkitConfig, []byte(p.settings.Daemon.BuildkitConfig), 0o600)
 		if err != nil {
 			return fmt.Errorf("error writing buildkit.json: %s", err)
 		}
