@@ -10,7 +10,7 @@ FROM docker:20.10-dind
 ARG BUILDX_VERSION
 
 # renovate: datasource=github-releases depName=docker/buildx
-ENV BUILDX_VERSION="${BUILDX_VERSION:-v0.6.3}"
+ENV BUILDX_VERSION="${BUILDX_VERSION:-v0.9.1}"
 
 ENV DOCKER_HOST=unix:///var/run/docker.sock
 
