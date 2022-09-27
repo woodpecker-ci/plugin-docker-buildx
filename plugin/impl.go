@@ -2,6 +2,7 @@ package plugin
 
 import (
 	"fmt"
+	"net/url"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -101,6 +102,32 @@ func (p *Plugin) Validate() error {
 	return nil
 }
 
+func (p *Plugin) writeBuildkitConfig() error {
+	if p.settings.Daemon.BuildkitConfig == "" && p.settings.Daemon.Registry != "" {
+		registry := p.settings.Daemon.Registry
+		u, err := url.Parse(registry)
+		if err == nil && u.Host != "" {
+			registry = u.Host
+		}
+
+		caPath := fmt.Sprintf("/etc/docker/certs.d/%s/ca.crt", registry)
+		ca, err := os.Open(caPath)
+		if err != nil && !os.IsNotExist(err) {
+			logrus.Warnf("error reading %s: %w", caPath, err)
+		} else if err == nil {
+			ca.Close()
+			p.settings.Daemon.BuildkitConfig = fmt.Sprintf(buildkitConfigTemplate, registry, caPath)
+		}
+	}
+	if p.settings.Daemon.BuildkitConfig != "" {
+		err := os.WriteFile(buildkitConfig, []byte(p.settings.Daemon.BuildkitConfig), 0o600)
+		if err != nil {
+			return fmt.Errorf("error writing buildkit.toml: %s", err)
+		}
+	}
+	return nil
+}
+
 // Execute provides the implementation of the plugin.
 func (p *Plugin) Execute() error {
 	// start the Docker daemon server
@@ -139,11 +166,8 @@ func (p *Plugin) Execute() error {
 		}
 	}
 
-	if p.settings.Daemon.BuildkitConfig != "" {
-		err := os.WriteFile(buildkitConfig, []byte(p.settings.Daemon.BuildkitConfig), 0o600)
-		if err != nil {
-			return fmt.Errorf("error writing buildkit.json: %s", err)
-		}
+	if err := p.writeBuildkitConfig(); err != nil {
+		return err
 	}
 
 	switch {

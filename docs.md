@@ -15,7 +15,15 @@ Woodpecker CI plugin to build multiarch Docker images with buildx. This plugin i
 
 - Build without push
 - Use custom registries
-- Build based on existing tags when needed.
+- Build based on existing tags when needed
+
+It will automatically generate buildkit configuration to use custom CA certificate if following conditions are met:
+
+- Setting `buildkit_config` is not set
+- Custom `registry` value is provided
+- File exists `/etc/docker/certs.d/<registry-value>/ca.crt`
+
+> NB! To mount custom CA you can use Woodpecker CI runner configuration environment `WOODPECKER_BACKEND_DOCKER_VOLUMES` with value `/etc/ssl/certs:/etc/ssl/certs:ro,/etc/docker/certs.d:/etc/docker/certs.d:ro`. And have created file `/etc/docker/certs.d/<registry-value>/ca.crt` with CA certificate on runner server host.
 
 ## Settings
 
@@ -86,7 +94,7 @@ Woodpecker CI plugin to build multiarch Docker images with buildx. This plugin i
 | `experimental`            | `false`           | enables docker daemon experimental mode
 | `debug`                   | `false`           | enables verbose debug mode for the docker daemon
 | `daemon_off`              | `false`           | disables the startup of the docker daemon
-| `buildkit_config`         | *none*            | sets content of the docker buildkit json config
+| `buildkit_config`         | *none*            | sets content of the docker [buildkit TOML config](https://github.com/moby/buildkit/blob/master/docs/buildkitd.toml.md)
 | `context`                 | `.`               | sets the path of the build context to use
 | `default_tags`/`auto_tag` | `false`           | generates tag names automatically based on git branch and git tag
 | `default_suffix"`/`auto_tag_suffix`| *none*   | generates tag names with the given suffix
