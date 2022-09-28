@@ -98,6 +98,8 @@ It will automatically generate buildkit configuration to use custom CA certifica
 | `context`                 | `.`               | sets the path of the build context to use
 | `default_tags`/`auto_tag` | `false`           | generates tag names automatically based on git branch and git tag
 | `default_suffix"`/`auto_tag_suffix`| *none*   | generates tag names with the given suffix
+| `label`/`labels`          | *none*            | sets labels to use for the image in format `<name>=<value>`
+| `default_labels`/`auto_labels` | `true`       | sets docker image labels based on git information
 | `build_args`              | *none*            | sets custom build arguments for the build
 | `build_args_from_env`     | *none*            | forwards environment variables as custom arguments to the build
 | `quiet`                   | `false`           | enables suppression of the build output

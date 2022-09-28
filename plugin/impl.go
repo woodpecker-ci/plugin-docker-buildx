@@ -49,6 +49,8 @@ type Build struct {
 	TagsAuto   bool            // Docker build auto tag
 	TagsSuffix string          // Docker build tags with suffix
 	Tags       cli.StringSlice // Docker build tags
+	LabelsAuto bool            // Docker build auto labels
+	Labels     cli.StringSlice // Docker build labels
 	Platforms  cli.StringSlice // Docker build target platforms
 	Args       cli.StringSlice // Docker build args
 	ArgsEnv    cli.StringSlice // Docker build args from env
@@ -97,6 +99,9 @@ func (p *Plugin) Validate() error {
 			logrus.Printf("skipping automated docker build for %s", p.settings.Build.Ref)
 			return nil
 		}
+	}
+	if p.settings.Build.LabelsAuto {
+		p.settings.Build.Labels = *cli.NewStringSlice(p.Labels()...)
 	}
 
 	return nil

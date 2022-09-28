@@ -126,6 +126,10 @@ func commandBuild(build Build, dryrun bool) *exec.Cmd {
 		args = append(args, "-t", fmt.Sprintf("%s:%s", build.Repo, arg))
 	}
 
+	for _, l := range build.Labels.Value() {
+		args = append(args, "--label", l)
+	}
+
 	return exec.Command(dockerExe, args...)
 }
 

@@ -134,6 +134,19 @@ func settingsFlags(settings *plugin.Settings) []cli.Flag {
 			Destination: &settings.Build.TagsSuffix,
 		},
 		&cli.StringSliceFlag{
+			Name:        "labels",
+			EnvVars:     []string{"PLUGIN_LABEL", "PLUGIN_LABELS"},
+			Usage:       "sets labels to use for the image",
+			Destination: &settings.Build.Labels,
+		},
+		&cli.BoolFlag{
+			Name:        "labels.auto",
+			EnvVars:     []string{"PLUGIN_DEFAULT_LABELS", "PLUGIN_AUTO_LABEL"},
+			Usage:       "generates labels automatically based on git repository info",
+			Value:       true,
+			Destination: &settings.Build.LabelsAuto,
+		},
+		&cli.StringSliceFlag{
 			Name:        "args",
 			EnvVars:     []string{"PLUGIN_BUILD_ARGS"},
 			Usage:       "sets custom build arguments for the build",
