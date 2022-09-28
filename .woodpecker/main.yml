@@ -1,20 +1,26 @@
+branches: main
+
+variables:
+    - &platforms 'linux/amd64,linux/arm64'
+
 pipeline:
   dryrun:
-    image: plugins/kaniko
+    image: woodpeckerci/plugin-docker-buildx:v20.10.18
     settings:
+      platforms: *platforms
       repo: woodpeckerci/plugin-docker-buildx
-      tags: latest
-      dockerfile: Dockerfile
-      no_push: true
+      dockerfile: Dockerfile.multiarch
+      dry_run: true
     when:
       event: pull_request
 
   publish:
-    image: plugins/kaniko
+    image: woodpeckerci/plugin-docker-buildx:v20.10.18
     settings:
+      platforms: *platforms
       repo: woodpeckerci/plugin-docker-buildx
       tags: latest, ${CI_COMMIT_TAG}
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.multiarch
       username:
         from_secret: docker_username
       password:

@@ -1,9 +1,12 @@
-FROM golang:1.18-alpine as build
+FROM --platform=$BUILDPLATFORM golang:1.18 as build
 
 COPY . /src
 WORKDIR /src
 
-RUN CGO_ENABLED=0 go build -v -a -tags netgo -o docker-buildx ./cmd/docker-buildx
+ARG TARGETOS TARGETARCH
+RUN --mount=type=cache,target=/root/.cache/go-build \
+    --mount=type=cache,target=/go/pkg \
+    make build
 
 FROM docker:20.10-dind
 

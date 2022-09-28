@@ -1,5 +1,6 @@
 /release/
-/drone-docker-buildx*
+
+docker-buildx
 
 coverage.out
 CHANGELOG.md
