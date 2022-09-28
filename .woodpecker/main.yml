@@ -19,7 +19,7 @@ pipeline:
     settings:
       platforms: *platforms
       repo: woodpeckerci/plugin-docker-buildx
-      tags: latest, ${CI_COMMIT_TAG}
+      auto_tag: true
       dockerfile: Dockerfile.multiarch
       username:
         from_secret: docker_username
