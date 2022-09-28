@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/sirupsen/logrus"
@@ -99,7 +100,18 @@ func (p *Plugin) Validate() error {
 			logrus.Printf("skipping automated docker build for %s", p.settings.Build.Ref)
 			return nil
 		}
+	} else {
+		// ignore empty tags
+		var tags []string
+		for _, t := range p.settings.Build.Tags.Value() {
+			t = strings.TrimSpace(t)
+			if t != "" {
+				tags = append(tags, t)
+			}
+		}
+		p.settings.Build.Tags = *cli.NewStringSlice(tags...)
 	}
+
 	if p.settings.Build.LabelsAuto {
 		p.settings.Build.Labels = *cli.NewStringSlice(p.Labels()...)
 	}
