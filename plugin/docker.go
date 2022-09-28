@@ -122,8 +122,10 @@ func commandBuild(build Build, dryrun bool) *exec.Cmd {
 		args = append(args, "--platform", strings.Join(build.Platforms.Value()[:], ","))
 	}
 
-	for _, arg := range build.Tags.Value() {
-		args = append(args, "-t", fmt.Sprintf("%s:%s", build.Repo, arg))
+	for _, tag := range build.Tags.Value() {
+		for _, repo := range build.Repo.Value() {
+			args = append(args, "-t", fmt.Sprintf("%s:%s", repo, tag))
+		}
 	}
 
 	for _, l := range build.Labels.Value() {

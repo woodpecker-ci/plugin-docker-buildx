@@ -60,7 +60,7 @@ type Build struct {
 	Pull       bool            // Docker build pull
 	CacheFrom  cli.StringSlice // Docker build cache-from
 	Compress   bool            // Docker build compress
-	Repo       string          // Docker build repository
+	Repo       cli.StringSlice // Docker build repository
 	NoCache    bool            // Docker build no-cache
 	AddHost    cli.StringSlice // Docker build add-host
 	Quiet      bool            // Docker build quiet

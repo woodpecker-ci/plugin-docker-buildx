@@ -30,7 +30,7 @@ It will automatically generate buildkit configuration to use custom CA certifica
 | Settings Name             | Default           | Description
 | --------------------------| ----------------- | --------------------------------------------
 | `dry-run`                 | `false`           | disables docker push
-| `repo`                    | *none*            | sets repository name for the image
+| `repo`                    | *none*            | sets repository name for the image (can be a list)
 | `username`                | *none*            | sets username to authenticates with
 | `password`                | *none*            | sets password / token to authenticates with
 | `email`                   | *none*            | sets email address to authenticates with

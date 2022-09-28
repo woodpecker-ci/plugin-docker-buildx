@@ -189,7 +189,7 @@ func settingsFlags(settings *plugin.Settings) []cli.Flag {
 			Usage:       "enables compression og the build context using gzip",
 			Destination: &settings.Build.Compress,
 		},
-		&cli.StringFlag{
+		&cli.StringSliceFlag{
 			Name:        "repo",
 			EnvVars:     []string{"PLUGIN_REPO"},
 			Usage:       "sets repository name for the image",
