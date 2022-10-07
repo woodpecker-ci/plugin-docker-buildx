@@ -1,4 +1,8 @@
-FROM --platform=$BUILDPLATFORM golang:1.18 as build
+ARG BUILDX_VERSION=0.9.1
+ARG DOCKER_VERSION=20.10-dind
+ARG GOLANG_VERSION=1.18
+
+FROM --platform=$BUILDPLATFORM golang:${GOLANG_VERSION} as build
 
 COPY . /src
 WORKDIR /src
@@ -8,24 +12,12 @@ RUN --mount=type=cache,target=/root/.cache/go-build \
     --mount=type=cache,target=/go/pkg \
     make build
 
-FROM docker:20.10-dind
+FROM docker/buildx-bin:${BUILDX_VERSION} as buildx-bin
+FROM docker:${DOCKER_VERSION}
 
-ARG BUILDX_VERSION
-
-# renovate: datasource=github-releases depName=docker/buildx
-ENV BUILDX_VERSION="${BUILDX_VERSION:-v0.9.1}"
+COPY --from=buildx-bin /buildx /usr/libexec/docker/cli-plugins/docker-buildx
+COPY --from=build /src/plugin-docker-buildx /bin/plugin-docker-buildx
 
 ENV DOCKER_HOST=unix:///var/run/docker.sock
 
-RUN \
-    apk --update add --virtual .build-deps curl && \
-    mkdir -p /usr/lib/docker/cli-plugins/ && \
-    curl -SsL -o /usr/lib/docker/cli-plugins/docker-buildx "https://github.com/docker/buildx/releases/download/v${BUILDX_VERSION##v}/buildx-v${BUILDX_VERSION##v}.linux-amd64" && \
-    chmod 755 /usr/lib/docker/cli-plugins/docker-buildx && \
-    apk del .build-deps && \
-    rm -rf /var/cache/apk/* && \
-    rm -rf /tmp/*
-
-COPY --from=build /src/docker-buildx /bin/docker-buildx
-
-ENTRYPOINT ["/usr/local/bin/dockerd-entrypoint.sh", "docker-buildx"]
+ENTRYPOINT ["/usr/local/bin/dockerd-entrypoint.sh", "plugin-docker-buildx"]

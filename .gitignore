@@ -1,6 +1,6 @@
 /release/
 
-docker-buildx
+plugin-docker-buildx
 
 coverage.out
 CHANGELOG.md
