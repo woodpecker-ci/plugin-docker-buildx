@@ -2,9 +2,18 @@ branches: main
 
 variables:
     - &platforms 'linux/amd64,linux/arm64'
+    - &golang 'golang:1.18'
 
 pipeline:
-  dryrun:
+  vendor:
+    image: *golang
+    commands: go mod vendor
+
+  test:
+    image: *golang
+    commands: go test -cover ./...
+
+  publish-dryrun:
     image: woodpeckerci/plugin-docker-buildx:v20.10.18
     settings:
       platforms: *platforms

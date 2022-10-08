@@ -1,4 +1,5 @@
 /release/
+/vendor/
 
 plugin-docker-buildx
 

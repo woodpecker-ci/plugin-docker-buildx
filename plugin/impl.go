@@ -130,7 +130,7 @@ func (p *Plugin) writeBuildkitConfig() error {
 		caPath := fmt.Sprintf("/etc/docker/certs.d/%s/ca.crt", registry)
 		ca, err := os.Open(caPath)
 		if err != nil && !os.IsNotExist(err) {
-			logrus.Warnf("error reading %s: %w", caPath, err)
+			logrus.Warnf("error reading %s: %v", caPath, err)
 		} else if err == nil {
 			ca.Close()
 			p.settings.Daemon.BuildkitConfig = fmt.Sprintf(buildkitConfigTemplate, registry, caPath)
