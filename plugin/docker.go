@@ -10,19 +10,6 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-// helper function to create the docker login command.
-func commandLogin(login Login) *exec.Cmd {
-	if login.Email != "" {
-		return commandLoginEmail(login)
-	}
-	return exec.Command(
-		dockerExe, "login",
-		"-u", login.Username,
-		"-p", login.Password,
-		login.Registry,
-	)
-}
-
 // helper to check if args match "docker pull <image>"
 func isCommandPull(args []string) bool {
 	return len(args) > 2 && args[1] == "pull"

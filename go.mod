@@ -1,6 +1,6 @@
 module codeberg.org/woodpecker-plugins/plugin-docker-buildx
 
-go 1.17
+go 1.18
 
 require (
 	github.com/coreos/go-semver v0.3.0

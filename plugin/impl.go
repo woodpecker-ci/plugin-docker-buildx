@@ -1,6 +1,7 @@
 package plugin
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/url"
 	"os"
@@ -68,18 +69,50 @@ type Build struct {
 
 // Settings for the Plugin.
 type Settings struct {
-	Daemon  Daemon
-	Login   Login
-	Build   Build
-	Dryrun  bool
-	Cleanup bool
+	Daemon       Daemon
+	Logins       []Login
+	LoginsRaw    string
+	DefaultLogin Login
+	Build        Build
+	Dryrun       bool
+	Cleanup      bool
+}
+
+func (l Login) anonymous() bool {
+	return l.Username == "" || l.Password == ""
+}
+
+// Init initialise plugin settings
+func (p *Plugin) InitSettings() error {
+	if err := json.Unmarshal([]byte(p.settings.LoginsRaw), &p.settings.Logins); err != nil {
+		return fmt.Errorf("Could not unmarshal logins: %v", err)
+	}
+
+	p.settings.Build.Branch = p.pipeline.Repo.Branch
+	p.settings.Build.Ref = p.pipeline.Commit.Ref
+	if p.settings.DefaultLogin.anonymous() {
+		p.settings.Logins = append(p.settings.Logins, p.settings.DefaultLogin)
+	} else {
+		p.settings.Logins = prepend(p.settings.Logins, p.settings.DefaultLogin)
+	}
+
+	p.settings.Daemon.Registry = p.settings.Logins[0].Registry
+
+	return nil
 }
 
 // Validate handles the settings validation of the plugin.
 func (p *Plugin) Validate() error {
-	p.settings.Build.Branch = p.pipeline.Repo.Branch
-	p.settings.Build.Ref = p.pipeline.Commit.Ref
-	p.settings.Daemon.Registry = p.settings.Login.Registry
+	if err := p.InitSettings(); err != nil {
+		return err
+	}
+
+	// beside the default login all other logins need to set a username and password
+	for _, l := range p.settings.Logins[1:] {
+		if l.anonymous() {
+			return fmt.Errorf("beside the default login all other logins need to set a username and password")
+		}
+	}
 
 	if p.settings.Build.TagsAuto {
 		// return true if tag event or default branch
@@ -120,28 +153,38 @@ func (p *Plugin) Validate() error {
 }
 
 func (p *Plugin) writeBuildkitConfig() error {
+	// no buildkit config, automatically generate buildkit configuration to use a custom CA certificate for each registry
 	if p.settings.Daemon.BuildkitConfig == "" && p.settings.Daemon.Registry != "" {
-		registry := p.settings.Daemon.Registry
-		u, err := url.Parse(registry)
-		if err == nil && u.Host != "" {
-			registry = u.Host
-		}
+		for _, login := range p.settings.Logins {
+			if registry := login.Registry; registry != "" {
+				u, err := url.Parse(registry)
+				if err != nil {
+					return fmt.Errorf("could not parse registry address: %s: %v", registry, err)
+				}
+				if u.Host != "" {
+					registry = u.Host
+				}
 
-		caPath := fmt.Sprintf("/etc/docker/certs.d/%s/ca.crt", registry)
-		ca, err := os.Open(caPath)
-		if err != nil && !os.IsNotExist(err) {
-			logrus.Warnf("error reading %s: %v", caPath, err)
-		} else if err == nil {
-			ca.Close()
-			p.settings.Daemon.BuildkitConfig = fmt.Sprintf(buildkitConfigTemplate, registry, caPath)
+				caPath := fmt.Sprintf("/etc/docker/certs.d/%s/ca.crt", registry)
+				ca, err := os.Open(caPath)
+				if err != nil && !os.IsNotExist(err) {
+					logrus.Warnf("error reading %s: %v", caPath, err)
+				} else if err == nil {
+					ca.Close()
+					p.settings.Daemon.BuildkitConfig += fmt.Sprintf(buildkitConfigTemplate, registry, caPath)
+				}
+			}
 		}
 	}
+
+	// save buildkit config as described
 	if p.settings.Daemon.BuildkitConfig != "" {
 		err := os.WriteFile(buildkitConfig, []byte(p.settings.Daemon.BuildkitConfig), 0o600)
 		if err != nil {
 			return fmt.Errorf("error writing buildkit.toml: %s", err)
 		}
 	}
+
 	return nil
 }
 
@@ -164,23 +207,19 @@ func (p *Plugin) Execute() error {
 	}
 
 	// Create Auth Config File
-	if p.settings.Login.Config != "" {
+	if p.settings.Logins[0].Config != "" {
 		os.MkdirAll(dockerHome, 0o600)
 
 		path := filepath.Join(dockerHome, "config.json")
-		err := os.WriteFile(path, []byte(p.settings.Login.Config), 0o600)
+		err := os.WriteFile(path, []byte(p.settings.Logins[0].Config), 0o600)
 		if err != nil {
 			return fmt.Errorf("error writing config.json: %s", err)
 		}
 	}
 
 	// login to the Docker registry
-	if p.settings.Login.Password != "" {
-		cmd := commandLogin(p.settings.Login)
-		err := cmd.Run()
-		if err != nil {
-			return fmt.Errorf("error authenticating: %s", err)
-		}
+	if err := p.Login(); err != nil {
+		return err
 	}
 
 	if err := p.writeBuildkitConfig(); err != nil {
@@ -188,9 +227,9 @@ func (p *Plugin) Execute() error {
 	}
 
 	switch {
-	case p.settings.Login.Password != "":
+	case p.settings.Logins[0].Password != "":
 		fmt.Println("Detected registry credentials")
-	case p.settings.Login.Config != "":
+	case p.settings.Logins[0].Config != "":
 		fmt.Println("Detected registry credentials file")
 	default:
 		fmt.Println("Registry credentials or Docker config not provided. Guest mode enabled.")
@@ -227,4 +266,8 @@ func (p *Plugin) Execute() error {
 	}
 
 	return nil
+}
+
+func prepend[Type any](slice []Type, elems ...Type) []Type {
+	return append(elems, slice...)
 }

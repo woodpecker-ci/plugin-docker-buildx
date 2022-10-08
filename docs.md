@@ -16,11 +16,12 @@ Woodpecker CI plugin to build multiarch Docker images with buildx. This plugin i
 - Build without push
 - Use custom registries
 - Build based on existing tags when needed
+- Push to multible registries/repos
 
 It will automatically generate buildkit configuration to use custom CA certificate if following conditions are met:
 
 - Setting `buildkit_config` is not set
-- Custom `registry` value is provided
+- Custom `registry`/`logins` value is provided
 - File exists `/etc/docker/certs.d/<registry-value>/ca.crt`
 
 > NB! To mount custom CA you can use Woodpecker CI runner configuration environment `WOODPECKER_BACKEND_DOCKER_VOLUMES` with value `/etc/ssl/certs:/etc/ssl/certs:ro,/etc/docker/certs.d:/etc/docker/certs.d:ro`. And have created file `/etc/docker/certs.d/<registry-value>/ca.crt` with CA certificate on runner server host.
@@ -112,3 +113,23 @@ It will automatically generate buildkit configuration to use custom CA certifica
 | `no_cache`                | `false`           | disables the usage of cached intermediate containers
 | `add_host`                | *none*            | sets additional host:ip mapping
 | `output`                  | *none*            | sets build output in format `type=<type>[,<key>=<value>]`
+| `logins`                  | *none*            | option to log into multible registrys
+
+## Multi registry push example
+
+Only supported with `woodpecker >= 1.0.0` (next-da997fa3).
+
+```yml
+settings:
+  repo: a6543/tmp,codeberg.org/6543/tmp
+  tag: demo
+  logins:
+    - registry: https://index.docker.io/v1/
+      username: a6543
+      password:
+        from_secret: docker_token
+    - registry: https://codeberg.org
+      username: "6543"
+      password:
+        from_secret: cb_token
+```
