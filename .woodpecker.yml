@@ -1,5 +1,3 @@
-branches: main
-
 variables:
     - &platforms 'linux/amd64,linux/arm64'
     - &golang 'golang:1.18'
@@ -22,6 +20,7 @@ pipeline:
       dry_run: true
     when:
       event: pull_request
+      branch: main
 
   publish:
     image: woodpeckerci/plugin-docker-buildx:v20.10.18
