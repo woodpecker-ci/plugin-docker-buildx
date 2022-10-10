@@ -26,13 +26,21 @@ pipeline:
     image: woodpeckerci/plugin-docker-buildx:1.0
     settings:
       platforms: *platforms
-      repo: woodpeckerci/plugin-docker-buildx
+      repo: woodpeckerci/plugin-docker-buildx,codeberg.org/woodpecker-plugins/docker-buildx
       auto_tag: true
       dockerfile: Dockerfile.multiarch
-      username:
-        from_secret: docker_username
-      password:
-        from_secret: docker_password
+      logins:
+        - registry: https://index.docker.io/v1/
+          username:
+            from_secret: docker_username
+          password:
+            from_secret: docker_password
+        - registry: https://codeberg.org
+          username:
+            from_secret: cb_username
+          password:
+            from_secret: cb_password
+
     when:
       event: [push, tag, cron]
       branch: main
