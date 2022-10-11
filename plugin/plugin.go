@@ -6,7 +6,7 @@ import (
 
 // Plugin implements drone.Plugin to provide the plugin implementation.
 type Plugin struct {
-	settings Settings
+	settings *Settings
 	pipeline drone.Pipeline
 	network  drone.Network
 }
@@ -14,8 +14,15 @@ type Plugin struct {
 // New initializes a plugin from the given Settings, Pipeline, and Network.
 func New(settings Settings, pipeline drone.Pipeline, network drone.Network) drone.Plugin {
 	return &Plugin{
-		settings: settings,
+		settings: &settings,
 		pipeline: pipeline,
 		network:  network,
+	}
+}
+
+// newSettingsOnly initializes a plugin from the given Settings only.
+func newSettingsOnly(settings *Settings) drone.Plugin {
+	return &Plugin{
+		settings: settings,
 	}
 }

@@ -84,15 +84,18 @@ func (l Login) anonymous() bool {
 
 // Init initialise plugin settings
 func (p *Plugin) InitSettings() error {
-	if err := json.Unmarshal([]byte(p.settings.LoginsRaw), &p.settings.Logins); err != nil {
-		return fmt.Errorf("Could not unmarshal logins: %v", err)
+	if p.settings.LoginsRaw != "" {
+		if err := json.Unmarshal([]byte(p.settings.LoginsRaw), &p.settings.Logins); err != nil {
+			return fmt.Errorf("Could not unmarshal logins: %v", err)
+		}
 	}
 
 	p.settings.Build.Branch = p.pipeline.Repo.Branch
 	p.settings.Build.Ref = p.pipeline.Commit.Ref
-	if p.settings.DefaultLogin.anonymous() {
-		p.settings.Logins = append(p.settings.Logins, p.settings.DefaultLogin)
-	} else {
+
+	if len(p.settings.Logins) == 0 {
+		p.settings.Logins = []Login{p.settings.DefaultLogin}
+	} else if !p.settings.DefaultLogin.anonymous() {
 		p.settings.Logins = prepend(p.settings.Logins, p.settings.DefaultLogin)
 	}
 
