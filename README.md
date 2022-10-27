@@ -6,7 +6,7 @@
 
 Woodpecker CI plugin to build multiarch Docker images with buildx
 
-Woodpecker CI plugin to build multiarch Docker images with buildx. This plugin is a fork of [thegeeklab/drone-docker-buildx](https://github.com/thegeeklab/drone-docker-buildx/) which itself is a fork of [drone-plugins/drone-docker](https://github.com/drone-plugins/drone-docker). You can find the full documentation at You can find the full documentation at https://woodpecker-ci.org/plugins/plugin-docker-buildx.
+Woodpecker CI plugin to build multiarch Docker images with buildx. This plugin is a fork of [thegeeklab/drone-docker-buildx](https://github.com/thegeeklab/drone-docker-buildx/) which itself is a fork of [drone-plugins/drone-docker](https://github.com/drone-plugins/drone-docker). You can find the full documentation at You can find the full documentation at [woodpecker-ci.org](https://woodpecker-ci.org/plugins/Docker%20Buildx).
 
 ## Contributors
 
