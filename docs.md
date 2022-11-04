@@ -97,7 +97,7 @@ It will automatically generate buildkit configuration to use custom CA certifica
 | `daemon_off`              | `false`           | disables the startup of the docker daemon
 | `buildkit_config`         | *none*            | sets content of the docker [buildkit TOML config](https://github.com/moby/buildkit/blob/master/docs/buildkitd.toml.md)
 | `context`                 | `.`               | sets the path of the build context to use
-| `default_tags`/`auto_tag` | `false`           | generates tag names automatically based on git branch and git tag
+| `default_tags`/`auto_tag` | `false`           | generates tag names automatically based on git branch and git tag, tags supplied via `tags` are additionally added to the auto_tags without suffix
 | `default_suffix"`/`auto_tag_suffix`| *none*   | generates tag names with the given suffix
 | `label`/`labels`          | *none*            | sets labels to use for the image in format `<name>=<value>`
 | `default_labels`/`auto_labels` | `true`       | sets docker image labels based on git information

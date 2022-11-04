@@ -86,7 +86,7 @@ func (l Login) anonymous() bool {
 func (p *Plugin) InitSettings() error {
 	if p.settings.LoginsRaw != "" {
 		if err := json.Unmarshal([]byte(p.settings.LoginsRaw), &p.settings.Logins); err != nil {
-			return fmt.Errorf("Could not unmarshal logins: %v", err)
+			return fmt.Errorf("could not unmarshal logins: %v", err)
 		}
 	}
 
@@ -131,21 +131,17 @@ func (p *Plugin) Validate() error {
 				logrus.Printf("cannot build docker image for %s, invalid semantic version", p.settings.Build.Ref)
 				return err
 			}
+
+			// include user supplied tags
+			tag = append(tag, p.sanitizedUserTags()...)
+
 			p.settings.Build.Tags = *cli.NewStringSlice(tag...)
 		} else {
 			logrus.Printf("skipping automated docker build for %s", p.settings.Build.Ref)
 			return nil
 		}
 	} else {
-		// ignore empty tags
-		var tags []string
-		for _, t := range p.settings.Build.Tags.Value() {
-			t = strings.TrimSpace(t)
-			if t != "" {
-				tags = append(tags, t)
-			}
-		}
-		p.settings.Build.Tags = *cli.NewStringSlice(tags...)
+		p.settings.Build.Tags = *cli.NewStringSlice(p.sanitizedUserTags()...)
 	}
 
 	if p.settings.Build.LabelsAuto {
@@ -153,6 +149,18 @@ func (p *Plugin) Validate() error {
 	}
 
 	return nil
+}
+
+func (p *Plugin) sanitizedUserTags() []string {
+	// ignore empty tags
+	var tags []string
+	for _, t := range p.settings.Build.Tags.Value() {
+		t = strings.TrimSpace(t)
+		if t != "" {
+			tags = append(tags, t)
+		}
+	}
+	return tags
 }
 
 func (p *Plugin) writeBuildkitConfig() error {
