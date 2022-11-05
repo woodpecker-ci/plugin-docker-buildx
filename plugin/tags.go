@@ -2,6 +2,7 @@ package plugin
 
 import (
 	"fmt"
+	"regexp"
 	"strings"
 
 	"github.com/coreos/go-semver/semver"
@@ -9,8 +10,8 @@ import (
 
 // DefaultTagSuffix returns a set of default suggested tags
 // based on the commit ref with an attached suffix.
-func DefaultTagSuffix(ref, suffix string) ([]string, error) {
-	tags, err := DefaultTags(ref)
+func DefaultTagSuffix(ref, defaultTag, suffix string) ([]string, error) {
+	tags, err := DefaultTags(ref, defaultTag)
 	if err != nil {
 		return nil, err
 	}
@@ -18,7 +19,7 @@ func DefaultTagSuffix(ref, suffix string) ([]string, error) {
 		return tags, nil
 	}
 	for i, tag := range tags {
-		if tag == "latest" {
+		if tag == defaultTag {
 			tags[i] = suffix
 		} else {
 			tags[i] = fmt.Sprintf("%s-%s", tag, suffix)
@@ -39,14 +40,14 @@ func splitOff(input, delim string) string {
 
 // DefaultTags returns a set of default suggested tags based on
 // the commit ref.
-func DefaultTags(ref string) ([]string, error) {
+func DefaultTags(ref, defaultTag string) ([]string, error) {
 	if !strings.HasPrefix(ref, "refs/tags/") {
-		return []string{"latest"}, nil
+		return []string{defaultTag}, nil
 	}
 	v := stripTagPrefix(ref)
 	version, err := semver.NewVersion(v)
 	if err != nil {
-		return []string{"latest"}, err
+		return []string{defaultTag}, err
 	}
 	if version.PreRelease != "" || version.Metadata != "" {
 		return []string{
@@ -90,4 +91,9 @@ func stripTagPrefix(ref string) string {
 	ref = strings.TrimPrefix(ref, "refs/tags/")
 	ref = strings.TrimPrefix(ref, "v")
 	return ref
+}
+
+func isSingleTag(tag string) bool {
+	// currently only filtering for seperators, this could be improoved...
+	return !regexp.MustCompile(`[,\s]+`).MatchString(tag) && len(tag) > 0 && len(tag) <= 128
 }

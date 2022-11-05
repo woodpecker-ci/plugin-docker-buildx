@@ -13,10 +13,11 @@ var defaultSettings = Settings{
 		StoragePath: "/var/lib/docker",
 	},
 	Build: Build{
-		Context:    ".",
-		Tags:       *cli.NewStringSlice("latest"),
-		LabelsAuto: true,
-		Pull:       true,
+		Context:         ".",
+		Tags:            *cli.NewStringSlice("latest"),
+		TagsDefaultName: "latest",
+		LabelsAuto:      true,
+		Pull:            true,
 	},
 	DefaultLogin: Login{
 		Registry: "https://index.docker.io/v1/",

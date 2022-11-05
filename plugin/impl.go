@@ -43,28 +43,29 @@ type Login struct {
 
 // Build defines Docker build parameters.
 type Build struct {
-	Remote     string          // Git remote URL
-	Ref        string          // Git commit ref
-	Branch     string          // Git repository branch
-	Dockerfile string          // Docker build Dockerfile
-	Context    string          // Docker build context
-	TagsAuto   bool            // Docker build auto tag
-	TagsSuffix string          // Docker build tags with suffix
-	Tags       cli.StringSlice // Docker build tags
-	LabelsAuto bool            // Docker build auto labels
-	Labels     cli.StringSlice // Docker build labels
-	Platforms  cli.StringSlice // Docker build target platforms
-	Args       cli.StringSlice // Docker build args
-	ArgsEnv    cli.StringSlice // Docker build args from env
-	Target     string          // Docker build target
-	Output     string          // Docker build output
-	Pull       bool            // Docker build pull
-	CacheFrom  cli.StringSlice // Docker build cache-from
-	Compress   bool            // Docker build compress
-	Repo       cli.StringSlice // Docker build repository
-	NoCache    bool            // Docker build no-cache
-	AddHost    cli.StringSlice // Docker build add-host
-	Quiet      bool            // Docker build quiet
+	Remote          string          // Git remote URL
+	Ref             string          // Git commit ref
+	Branch          string          // Git repository branch
+	Dockerfile      string          // Docker build Dockerfile
+	Context         string          // Docker build context
+	TagsAuto        bool            // Docker build auto tag
+	TagsDefaultName string          // Docker build auto tag name override
+	TagsSuffix      string          // Docker build tags with suffix
+	Tags            cli.StringSlice // Docker build tags
+	LabelsAuto      bool            // Docker build auto labels
+	Labels          cli.StringSlice // Docker build labels
+	Platforms       cli.StringSlice // Docker build target platforms
+	Args            cli.StringSlice // Docker build args
+	ArgsEnv         cli.StringSlice // Docker build args from env
+	Target          string          // Docker build target
+	Output          string          // Docker build output
+	Pull            bool            // Docker build pull
+	CacheFrom       cli.StringSlice // Docker build cache-from
+	Compress        bool            // Docker build compress
+	Repo            cli.StringSlice // Docker build repository
+	NoCache         bool            // Docker build no-cache
+	AddHost         cli.StringSlice // Docker build add-host
+	Quiet           bool            // Docker build quiet
 }
 
 // Settings for the Plugin.
@@ -110,6 +111,10 @@ func (p *Plugin) Validate() error {
 		return err
 	}
 
+	if !isSingleTag(p.settings.Build.TagsDefaultName) {
+		return fmt.Errorf("'%s' is not a valid, single tag", p.settings.Build.TagsDefaultName)
+	}
+
 	// beside the default login all other logins need to set a username and password
 	for _, l := range p.settings.Logins[1:] {
 		if l.anonymous() {
@@ -126,6 +131,7 @@ func (p *Plugin) Validate() error {
 			tag, err := DefaultTagSuffix(
 				p.settings.Build.Ref,
 				p.settings.Build.TagsSuffix,
+				p.settings.Build.TagsDefaultName,
 			)
 			if err != nil {
 				logrus.Printf("cannot build docker image for %s, invalid semantic version", p.settings.Build.Ref)

@@ -128,6 +128,13 @@ func settingsFlags(settings *plugin.Settings) []cli.Flag {
 			Destination: &settings.Build.TagsAuto,
 		},
 		&cli.StringFlag{
+			Name:        "tags.defaultName",
+			EnvVars:     []string{"PLUGIN_DEFAULT_TAG"},
+			Usage:       "allows setting an alternative to `latest` for the auto tag",
+			Destination: &settings.Build.TagsDefaultName,
+			Value:       "latest",
+		},
+		&cli.StringFlag{
 			Name:        "tags.suffix",
 			EnvVars:     []string{"PLUGIN_DEFAULT_SUFFIX", "PLUGIN_AUTO_TAG_SUFFIX"},
 			Usage:       "generates tag names with the given suffix",
