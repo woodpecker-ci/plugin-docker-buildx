@@ -123,7 +123,7 @@ func settingsFlags(settings *plugin.Settings) []cli.Flag {
 		},
 		&cli.BoolFlag{
 			Name:        "tags.auto",
-			EnvVars:     []string{"PLUGIN_DEFAULT_TAGS", "PLUGIN_AUTO_TAG"},
+			EnvVars:     []string{"PLUGIN_AUTO_TAG"},
 			Usage:       "generates tag names automatically based on git branch and git tag",
 			Destination: &settings.Build.TagsAuto,
 		},
