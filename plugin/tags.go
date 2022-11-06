@@ -73,14 +73,10 @@ func DefaultTags(ref, defaultTag string) ([]string, error) {
 }
 
 // UseDefaultTag for keep only default branch for latest tag
+// return true if tag event or default branch
 func UseDefaultTag(ref, defaultBranch string) bool {
-	if strings.HasPrefix(ref, "refs/tags/") {
-		return true
-	}
-	if stripHeadPrefix(ref) == defaultBranch {
-		return true
-	}
-	return false
+	return strings.HasPrefix(ref, "refs/tags/") ||
+		stripHeadPrefix(ref) == defaultBranch
 }
 
 func stripHeadPrefix(ref string) string {

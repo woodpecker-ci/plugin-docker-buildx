@@ -40,6 +40,12 @@ It will automatically generate buildkit configuration to use custom CA certifica
 | `tag`/`tags`              | @".tags"          | sets repository tags to use for the image
 | `platforms`               | *none*            | sets target platform for build
 
+## auto_tag
+
+If set to ture, it will use the `default_tag` ("latest") on tag event or default branch.
+If it's a tag event it will also asume sem versioning and add taggs acordingly (`x`, `x.x` and `x.x.x`).
+If it's not a tag event, and no default branch, automated tags are skipped.
+
 ## Examples
 
 ```yml

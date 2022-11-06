@@ -123,7 +123,7 @@ func (p *Plugin) Validate() error {
 	}
 
 	if p.settings.Build.TagsAuto {
-		// return true if tag event or default branch
+		// we only generate tags on default branch or an tag event
 		if UseDefaultTag(
 			p.settings.Build.Ref,
 			p.settings.Build.Branch,
