@@ -12,7 +12,7 @@ pipeline:
     commands: go test -cover ./...
 
   publish-dryrun:
-    image: woodpeckerci/plugin-docker-buildx:1.0
+    image: woodpeckerci/plugin-docker-buildx:2.0
     pull: true
     settings:
       platforms: *platforms
@@ -24,7 +24,7 @@ pipeline:
       branch: main
 
   publish:
-    image: woodpeckerci/plugin-docker-buildx:1.0
+    image: woodpeckerci/plugin-docker-buildx:2.0
     settings:
       platforms: *platforms
       repo: woodpeckerci/plugin-docker-buildx,codeberg.org/woodpecker-plugins/docker-buildx
