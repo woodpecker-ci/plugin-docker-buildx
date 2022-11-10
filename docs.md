@@ -16,7 +16,7 @@ Woodpecker CI plugin to build multiarch Docker images with buildx. This plugin i
 - Build without push
 - Use custom registries
 - Build based on existing tags when needed
-- Push to multible registries/repos
+- Push to multiple registries/repos
 
 It will automatically generate buildkit configuration to use custom CA certificate if following conditions are met:
 
@@ -42,8 +42,8 @@ It will automatically generate buildkit configuration to use custom CA certifica
 
 ## auto_tag
 
-If set to ture, it will use the `default_tag` ("latest") on tag event or default branch.
-If it's a tag event it will also asume sem versioning and add taggs acordingly (`x`, `x.x` and `x.x.x`).
+If set to true, it will use the `default_tag` ("latest") on tag event or default branch.
+If it's a tag event it will also assume sem versioning and add tags accordingly (`x`, `x.x` and `x.x.x`).
 If it's not a tag event, and no default branch, automated tags are skipped.
 
 ## Examples
@@ -120,7 +120,7 @@ If it's not a tag event, and no default branch, automated tags are skipped.
 | `no_cache`                | `false`           | disables the usage of cached intermediate containers
 | `add_host`                | *none*            | sets additional host:ip mapping
 | `output`                  | *none*            | sets build output in format `type=<type>[,<key>=<value>]`
-| `logins`                  | *none*            | option to log into multible registrys
+| `logins`                  | *none*            | option to log into multiple registries
 
 ## Multi registry push example
 
