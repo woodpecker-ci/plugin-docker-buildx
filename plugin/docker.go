@@ -10,15 +10,6 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-// helper to check if args match "docker pull <image>"
-func isCommandPull(args []string) bool {
-	return len(args) > 2 && args[1] == "pull"
-}
-
-func commandPull(repo string) *exec.Cmd {
-	return exec.Command(dockerExe, "pull", repo)
-}
-
 func commandLoginEmail(login Login) *exec.Cmd {
 	return exec.Command(
 		dockerExe, "login",
@@ -85,6 +76,9 @@ func commandBuild(build Build, dryrun bool) *exec.Cmd {
 	}
 	for _, arg := range build.CacheFrom.Value() {
 		args = append(args, "--cache-from", arg)
+	}
+	for _, arg := range build.CacheTo.Value() {
+		args = append(args, "--cache-to", arg)
 	}
 	for _, arg := range build.ArgsEnv.Value() {
 		addProxyValue(&build, arg)
