@@ -209,6 +209,17 @@ func (p *Plugin) writeBuildkitConfig() error {
 func (p *Plugin) Execute() error {
 	// start the Docker daemon server
 	if !p.settings.Daemon.Disabled {
+		// If no custom DNS value set start internal DNS server
+		if len(p.settings.Daemon.DNS.Value()) == 0 {
+			ip, err := getContainerIP()
+			if err != nil {
+				logrus.Warnf("error detecting IP address: %v", err)
+			} else if ip != "" {
+				p.startCoredns()
+				p.settings.Daemon.DNS.Set(ip)
+			}
+		}
+
 		p.startDaemon()
 	}
 

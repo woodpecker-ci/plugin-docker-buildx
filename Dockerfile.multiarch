@@ -15,6 +15,9 @@ RUN --mount=type=cache,target=/root/.cache/go-build \
 FROM docker/buildx-bin:${BUILDX_VERSION} as buildx-bin
 FROM docker:${DOCKER_VERSION}
 
+RUN apk --update --no-cache add coredns
+
+COPY --from=build /src/Corefile /etc/coredns/Corefile
 COPY --from=buildx-bin /buildx /usr/libexec/docker/cli-plugins/docker-buildx
 COPY --from=build /src/plugin-docker-buildx /bin/plugin-docker-buildx
 
