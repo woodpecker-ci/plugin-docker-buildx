@@ -3,6 +3,8 @@ package plugin
 import (
 	"reflect"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_stripTagPrefix(t *testing.T) {
@@ -11,8 +13,8 @@ func Test_stripTagPrefix(t *testing.T) {
 		After  string
 	}{
 		{"refs/tags/1.0.0", "1.0.0"},
-		{"refs/tags/v1.0.0", "1.0.0"},
-		{"v1.0.0", "1.0.0"},
+		{"refs/tags/v1.0.0", "v1.0.0"},
+		{"v1.0.0", "v1.0.0"},
 	}
 
 	for _, test := range tests {
@@ -29,12 +31,20 @@ func TestDefaultTags(t *testing.T) {
 		Before     string
 		After      []string
 	}{
+		// no tag event
 		{"latest", "", []string{"latest"}},
 		{"latest", "refs/heads/master", []string{"latest"}},
+		// tag event with semver
 		{"latest", "refs/tags/0.9.0", []string{"0.9", "0.9.0"}},
 		{"latest", "refs/tags/1.0.0", []string{"1", "1.0", "1.0.0"}},
 		{"latest", "refs/tags/v1.0.0", []string{"1", "1.0", "1.0.0"}},
+		{"latest", "refs/tags/v1.2.3-rc1", []string{"1.2.3-rc1"}},
 		{"latest", "refs/tags/v1.0.0-alpha.1", []string{"1.0.0-alpha.1"}},
+		{"latest", "refs/tags/v20221221", []string{"20221221", "20221221.0", "20221221.0.0"}},
+		{"latest", "refs/tags/v2022-12-21", []string{"2022.0.0-12-21"}},
+		// tag event with date
+		{"latest", "refs/tags/20221221", []string{"20221221"}},
+		{"latest", "refs/tags/2022-12-21", []string{"2022-12-21"}},
 	}
 
 	for _, test := range tests {
@@ -61,14 +71,14 @@ func TestDefaultTagsError(t *testing.T) {
 		},
 		{
 			DefaultTag: "latest",
-			Before:     "refs/tags/20190203",
+			Before:     "refs/tags/2a",
 		},
 	}
 
 	for _, test := range tests {
-		_, err := DefaultTags(test.Before, test.DefaultTag)
+		tags, err := DefaultTags(test.Before, test.DefaultTag)
 		if err == nil {
-			t.Errorf("Expect tag error for %s", test)
+			t.Errorf("Expect tag error for %s, got tags %v", test, tags)
 		}
 	}
 }
@@ -186,8 +196,8 @@ func TestDefaultTagSuffix(t *testing.T) {
 			Suffix:     "nanoserver",
 			After: []string{
 				"18-nanoserver",
-				"18.06-nanoserver",
-				"18.06.0-nanoserver",
+				"18.6-nanoserver",
+				"18.6.0-nanoserver",
 			},
 		},
 		{
@@ -197,22 +207,19 @@ func TestDefaultTagSuffix(t *testing.T) {
 			Suffix:     "nanoserver",
 			After: []string{
 				"18-nanoserver",
-				"18.06-nanoserver",
-				"18.06.0-nanoserver",
+				"18.6-nanoserver",
+				"18.6.0-nanoserver",
 			},
 		},
 	}
 
 	for _, test := range tests {
-		tag, err := DefaultTagSuffix(test.Before, test.DefaultTag, test.Suffix)
-		if err != nil {
-			t.Error(err)
-			continue
-		}
-		got, want := tag, test.After
-		if !reflect.DeepEqual(got, want) {
-			t.Errorf("%q. Got tag %v, want %v", test.Name, got, want)
-		}
+		t.Run(test.Name, func(t *testing.T) {
+			tags, err := DefaultTagSuffix(test.Before, test.DefaultTag, test.Suffix)
+			if assert.NoError(t, err) {
+				assert.EqualValues(t, test.After, tags)
+			}
+		})
 	}
 }
 

@@ -5,7 +5,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/coreos/go-semver/semver"
+	"github.com/6543/go-version"
 )
 
 // Labels returns list of labels to use for image
@@ -22,8 +22,8 @@ func (p *Plugin) Labels() []string {
 	if p.pipeline.Commit.SHA != "" {
 		l = append(l, fmt.Sprintf("org.opencontainers.image.revision=%s", p.pipeline.Commit.SHA))
 	}
-	if p.settings.Build.Ref != "" && strings.HasPrefix(p.settings.Build.Ref, "refs/tags/") {
-		v, err := semver.NewVersion(strings.TrimPrefix(p.settings.Build.Ref[10:], "v"))
+	if p.settings.Build.Ref != "" && strings.HasPrefix(p.settings.Build.Ref, tagRefPrefix) {
+		v, err := version.NewSemver(stripTagPrefix(p.settings.Build.Ref))
 		if err == nil && v != nil {
 			l = append(l, fmt.Sprintf("org.opencontainers.image.version=%s", v.String()))
 		}

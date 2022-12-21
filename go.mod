@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	codeberg.org/6543/go-yaml2json v0.3.0
-	github.com/coreos/go-semver v0.3.0
+	github.com/6543/go-version v1.3.1
 	github.com/drone-plugins/drone-plugin-lib v0.4.0
 	github.com/joho/godotenv v1.4.0
 	github.com/sirupsen/logrus v1.9.0
