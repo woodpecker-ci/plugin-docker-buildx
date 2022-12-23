@@ -1,6 +1,7 @@
 variables:
     - &platforms 'linux/amd64,linux/arm64'
     - &golang 'golang:1.18'
+    - &build_plugin 'woodpeckerci/plugin-docker-buildx:latest'
 
 pipeline:
   vendor:
@@ -12,7 +13,7 @@ pipeline:
     commands: go test -cover ./...
 
   publish-dryrun:
-    image: woodpeckerci/plugin-docker-buildx:2.0
+    image: *build_plugin
     pull: true
     settings:
       platforms: *platforms
@@ -24,7 +25,7 @@ pipeline:
       branch: main
 
   publish:
-    image: woodpeckerci/plugin-docker-buildx:2.0
+    image: *build_plugin
     settings:
       platforms: *platforms
       repo: woodpeckerci/plugin-docker-buildx,codeberg.org/woodpecker-plugins/docker-buildx
