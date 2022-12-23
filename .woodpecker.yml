@@ -1,7 +1,7 @@
 variables:
     - &platforms 'linux/amd64,linux/arm64'
     - &golang 'golang:1.18'
-    - &build_plugin 'woodpeckerci/plugin-docker-buildx:latest'
+    - &build_plugin 'woodpeckerci/plugin-docker-buildx:2'
 
 pipeline:
   vendor:
