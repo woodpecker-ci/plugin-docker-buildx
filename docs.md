@@ -9,7 +9,7 @@ containerImageUrl: https://hub.docker.com/r/woodpeckerci/plugin-docker-buildx
 url: https://codeberg.org/woodpecker-plugins/docker-buildx
 ---
 
-Woodpecker CI plugin to build multiarch Docker images with buildx. This plugin is a fork of [thegeeklab/drone-docker-buildx](https://github.com/thegeeklab/drone-docker-buildx/) which itself is a fork of [drone-plugins/drone-docker](https://github.com/drone-plugins/drone-docker). You can find the full documentation at You can find the full documentation at [woodpecker-plugins.codeberg.page](https://woodpecker-plugins.codeberg.page/plugins/drone-docker-buildx).
+Woodpecker CI plugin to build multiarch Docker images with buildx. This plugin is a fork of [thegeeklab/drone-docker-buildx](https://github.com/thegeeklab/drone-docker-buildx/) which itself is a fork of [drone-plugins/drone-docker](https://github.com/drone-plugins/drone-docker). You can find the full documentation at [woodpecker-plugins.codeberg.page](https://woodpecker-plugins.codeberg.page/plugins/drone-docker-buildx).
 
 ## Features
 
