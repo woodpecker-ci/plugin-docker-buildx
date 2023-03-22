@@ -1,6 +1,6 @@
 module codeberg.org/woodpecker-plugins/plugin-docker-buildx
 
-go 1.18
+go 1.20
 
 require (
 	codeberg.org/6543/go-yaml2json v0.3.0
