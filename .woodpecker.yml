@@ -1,7 +1,11 @@
 variables:
-    - &platforms 'linux/amd64,linux/arm64'
     - &golang 'golang:1.20'
     - &build_plugin 'woodpeckerci/plugin-docker-buildx:2'
+    - base_settings: &base_buildx_settings
+        platforms: 'linux/amd64,linux/arm64'
+        dockerfile: Dockerfile.multiarch
+        auto_tag: true
+        repo: woodpeckerci/plugin-docker-buildx,codeberg.org/woodpecker-plugins/docker-buildx
 
 pipeline:
   vendor:
@@ -16,9 +20,8 @@ pipeline:
     image: *build_plugin
     pull: true
     settings:
-      platforms: *platforms
-      repo: woodpeckerci/plugin-docker-buildx
-      dockerfile: Dockerfile.multiarch
+      <<: *base_buildx_settings
+      repo: test
       dry_run: true
     when:
       event: pull_request
@@ -27,10 +30,7 @@ pipeline:
   publish:
     image: *build_plugin
     settings:
-      platforms: *platforms
-      repo: woodpeckerci/plugin-docker-buildx,codeberg.org/woodpecker-plugins/docker-buildx
-      auto_tag: true
-      dockerfile: Dockerfile.multiarch
+      <<: *base_buildx_settings
       logins:
         # Default DockerHub login
         - registry: https://index.docker.io/v1/
