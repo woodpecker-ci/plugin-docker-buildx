@@ -12,6 +12,8 @@ import (
 
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
+
+	"codeberg.org/woodpecker-plugins/plugin-docker-buildx/utils"
 )
 
 // Daemon defines Docker daemon parameters.
@@ -52,6 +54,7 @@ type Build struct {
 	TagsDefaultName string          // Docker build auto tag name override
 	TagsSuffix      string          // Docker build tags with suffix
 	Tags            cli.StringSlice // Docker build tags
+	TagsFile        string          // Docker build tags read from an file
 	LabelsAuto      bool            // Docker build auto labels
 	Labels          cli.StringSlice // Docker build labels
 	Platforms       cli.StringSlice // Docker build target platforms
@@ -121,6 +124,22 @@ func (p *Plugin) Validate() error {
 		if l.anonymous() {
 			return fmt.Errorf("beside the default login all other logins need to set a username and password")
 		}
+	}
+
+	// overload tags flag with tags.file if set
+	if p.settings.Build.TagsFile != "" {
+		tagsFile, err := os.ReadFile(p.settings.Build.TagsFile)
+		if err != nil {
+			return fmt.Errorf("could not read tags file: %w", err)
+		}
+
+		// split file content into slice of tags
+		tagsFileList := strings.Split(strings.TrimSpace(string(tagsFile)), "\n")
+		// trim space of each tag
+		tagsFileList = utils.Map(tagsFileList, func(s string) string { return strings.TrimSpace(s) })
+
+		// finally overwrite
+		p.settings.Build.Tags = *cli.NewStringSlice(tagsFileList...)
 	}
 
 	if p.settings.Build.TagsAuto {

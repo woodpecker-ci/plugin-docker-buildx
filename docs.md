@@ -9,7 +9,7 @@ containerImageUrl: https://hub.docker.com/r/woodpeckerci/plugin-docker-buildx
 url: https://codeberg.org/woodpecker-plugins/docker-buildx
 ---
 
-Woodpecker CI plugin to build multiarch Docker images with buildx. This plugin is a fork of [thegeeklab/drone-docker-buildx](https://github.com/thegeeklab/drone-docker-buildx/) which itself is a fork of [drone-plugins/drone-docker](https://github.com/drone-plugins/drone-docker). You can find the full documentation at [woodpecker-ci.org](https://woodpecker-ci.org/plugins/Docker%20Buildx).
+Woodpecker CI plugin to build multiarch Docker images with buildx. This plugin is a fork of [thegeeklab/drone-docker-buildx](https://github.com/thegeeklab/drone-docker-buildx/) which itself is a fork of [drone-plugins/drone-docker](https://github.com/drone-plugins/drone-docker).
 
 ## Features
 
@@ -37,7 +37,7 @@ It will automatically generate buildkit configuration to use custom CA certifica
 | `email`                   | *none*            | sets email address to authenticates with
 | `registry`                | `https://index.docker.io/v1/` | sets docker registry to authenticate with
 | `dockerfile`              | `Dockerfile`      | sets dockerfile to use for the image build
-| `tag`/`tags`              | @".tags"          | sets repository tags to use for the image
+| `tag`/`tags`              | *none*            | sets repository tags to use for the image
 | `platforms`               | *none*            | sets target platform for build
 
 ## auto_tag
@@ -48,7 +48,7 @@ If it's not a tag event, and no default branch, automated tags are skipped.
 
 ## Examples
 
-```yml
+```yaml
   publish-next-agent:
     image: woodpeckerci/plugin-docker-buildx
     secrets: [docker_username, docker_password]
@@ -62,7 +62,7 @@ If it's not a tag event, and no default branch, automated tags are skipped.
       event: push
 ```
 
-```yml
+```yaml
   publish:
     image: woodpeckerci/plugin-docker-buildx
     settings:
@@ -75,7 +75,7 @@ If it's not a tag event, and no default branch, automated tags are skipped.
         from_secret: cb_token
 ```
 
-```yml
+```yaml
   docker-build:
     image: woodpeckerci/plugin-docker-buildx
     settings:
@@ -102,6 +102,7 @@ If it's not a tag event, and no default branch, automated tags are skipped.
 | `debug`                   | `false`           | enables verbose debug mode for the docker daemon
 | `daemon_off`              | `false`           | disables the startup of the docker daemon
 | `buildkit_config`         | *none*            | sets content of the docker [buildkit TOML config](https://github.com/moby/buildkit/blob/master/docs/buildkitd.toml.md)
+| `tags_file`               | *none*            | overwrites `tags` option with values find in specified file
 | `context`                 | `.`               | sets the path of the build context to use
 | `auto_tag`                | `false`           | generates tag names automatically based on git branch and git tag, tags supplied via `tags` are additionally added to the auto_tags without suffix
 | `default_suffix"`/`auto_tag_suffix`| *none*   | generates tag names with the given suffix
@@ -126,7 +127,7 @@ If it's not a tag event, and no default branch, automated tags are skipped.
 
 Only supported with `woodpecker >= 1.0.0` (next-da997fa3).
 
-```yml
+```yaml
 settings:
   repo: a6543/tmp,codeberg.org/6543/tmp
   tag: demo

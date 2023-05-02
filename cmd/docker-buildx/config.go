@@ -121,6 +121,12 @@ func settingsFlags(settings *plugin.Settings) []cli.Flag {
 			FilePath:    ".tags",
 			Destination: &settings.Build.Tags,
 		},
+		&cli.StringFlag{
+			Name:        "tags.file",
+			EnvVars:     []string{"PLUGIN_TAGS_FILE", "PLUGIN_TAG_FILE"},
+			Usage:       "overwrites tags flag with values find in set file",
+			Destination: &settings.Build.TagsFile,
+		},
 		&cli.BoolFlag{
 			Name:        "tags.auto",
 			EnvVars:     []string{"PLUGIN_AUTO_TAG"},
