@@ -7,7 +7,7 @@ variables:
         auto_tag: true
         repo: woodpeckerci/plugin-docker-buildx,codeberg.org/woodpecker-plugins/docker-buildx
 
-pipeline:
+steps:
   vendor:
     image: *golang
     commands: go mod vendor
