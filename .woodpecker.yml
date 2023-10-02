@@ -1,11 +1,20 @@
 variables:
-    - &golang 'golang:1.20'
-    - &build_plugin 'woodpeckerci/plugin-docker-buildx:2'
-    - base_settings: &base_buildx_settings
-        platforms: 'linux/amd64,linux/arm64'
-        dockerfile: Dockerfile.multiarch
-        auto_tag: true
-        repo: woodpeckerci/plugin-docker-buildx,codeberg.org/woodpecker-plugins/docker-buildx
+  - &golang "golang:1.20"
+  - &build_plugin "woodpeckerci/plugin-docker-buildx:2"
+  - base_settings: &base_buildx_settings
+      platforms: "linux/amd64,linux/arm64"
+      dockerfile: Dockerfile.multiarch
+      auto_tag: true
+      auto_tag_suffix: "-${DOCKER_VERSION}"
+      build_args_from_env:
+        - DOCKER_VERSION
+      repo: woodpeckerci/plugin-docker-buildx,codeberg.org/woodpecker-plugins/docker-buildx
+
+matrix:
+  DOCKER_VERSION:
+    - 20.10
+    - 23.0
+    - 24.0
 
 steps:
   vendor:
