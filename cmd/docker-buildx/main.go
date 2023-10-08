@@ -19,6 +19,10 @@ func main() {
 	if _, err := os.Stat("/run/drone/env"); err == nil {
 		godotenv.Overload("/run/drone/env")
 	}
+	
+	if envFile, set := os.LookupEnv("PLUGIN_ENV_FILE"); set {
+		godotenv.Overload(envFile)
+	}
 
 	app := &cli.App{
 		Name:    "docker-buildx",

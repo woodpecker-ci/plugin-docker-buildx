@@ -122,6 +122,7 @@ If it's not a tag event, and no default branch, automated tags are skipped.
 | `add_host`                | *none*            | sets additional host:ip mapping
 | `output`                  | *none*            | sets build output in format `type=<type>[,<key>=<value>]`
 | `logins`                  | *none*            | option to log into multiple registries
+| `env_file`                | *none*            | load env vars from specified file
 
 ## Multi registry push example
 
