@@ -1,5 +1,7 @@
 codeberg.org/6543/go-yaml2json v0.3.0 h1:BlvjmY0Gous8P+rr8aBdgPYnIfUAqFepF8q7Tp0R5t8=
 codeberg.org/6543/go-yaml2json v0.3.0/go.mod h1:mz61q14LWF4ZABrgMEDMmk3t9dPi6zgR1uBh2VKV2RQ=
+codeberg.org/6543/go-yaml2json v1.0.0 h1:heGqo9VEi7gY2yNqjj7X4ADs5nzlFIbGsJtgYDLrnig=
+codeberg.org/6543/go-yaml2json v1.0.0/go.mod h1:mz61q14LWF4ZABrgMEDMmk3t9dPi6zgR1uBh2VKV2RQ=
 github.com/6543/go-version v1.3.1 h1:HvOp+Telns7HWJ2Xo/05YXQSB2bE0WmVgbHqwMPZT4U=
 github.com/6543/go-version v1.3.1/go.mod h1:oqFAHCwtLVUTLdhQmVZWYvaHXTdsbB4SY85at64SQEo=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
