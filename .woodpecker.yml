@@ -1,6 +1,12 @@
+when:
+  - event: [pull_request, tag, cron]
+  - event: push
+    branch:
+      - ${CI_REPO_DEFAULT_BRANCH}
+
 variables:
     - &golang 'golang:1.21'
-    - &build_plugin 'woodpeckerci/plugin-docker-buildx:2'
+    - &build_plugin 'woodpeckerci/plugin-docker-buildx:2.1.0'
     - base_settings: &base_buildx_settings
         platforms: 'linux/amd64,linux/arm64'
         dockerfile: Dockerfile.multiarch
@@ -47,4 +53,4 @@ steps:
 
     when:
       event: [push, tag, cron]
-      branch: main
+      branch: ${CI_REPO_DEFAULT_BRANCH}
