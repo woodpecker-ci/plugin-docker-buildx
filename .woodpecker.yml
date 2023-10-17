@@ -1,5 +1,5 @@
 variables:
-    - &golang 'golang:1.20'
+    - &golang 'golang:1.21'
     - &build_plugin 'woodpeckerci/plugin-docker-buildx:2'
     - base_settings: &base_buildx_settings
         platforms: 'linux/amd64,linux/arm64'
