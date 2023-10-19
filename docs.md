@@ -102,7 +102,7 @@ If it's not a tag event, and no default branch, automated tags are skipped.
 | `debug`                   | `false`           | enables verbose debug mode for the docker daemon
 | `daemon_off`              | `false`           | disables the startup of the docker daemon
 | `buildkit_config`         | *none*            | sets content of the docker [buildkit TOML config](https://github.com/moby/buildkit/blob/master/docs/buildkitd.toml.md)
-| `tags_file`               | *none*            | overwrites `tags` option with values find in specified file
+| `tags_file`               | *none*            | overrides the `tags` option with values in a file named `.tags`; multiple tags can be specified separated by a comma
 | `context`                 | `.`               | sets the path of the build context to use
 | `auto_tag`                | `false`           | generates tag names automatically based on git branch and git tag, tags supplied via `tags` are additionally added to the auto_tags without suffix
 | `default_suffix"`/`auto_tag_suffix`| *none*   | generates tag names with the given suffix
@@ -122,6 +122,7 @@ If it's not a tag event, and no default branch, automated tags are skipped.
 | `add_host`                | *none*            | sets additional host:ip mapping
 | `output`                  | *none*            | sets build output in format `type=<type>[,<key>=<value>]`
 | `logins`                  | *none*            | option to log into multiple registries
+| `env_file`                | *none*            | load env vars from specified file
 
 ## Multi registry push example
 
