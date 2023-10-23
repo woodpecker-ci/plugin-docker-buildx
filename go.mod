@@ -3,7 +3,7 @@ module codeberg.org/woodpecker-plugins/plugin-docker-buildx
 go 1.20
 
 require (
-	codeberg.org/6543/go-yaml2json v0.3.0
+	codeberg.org/6543/go-yaml2json v1.0.0
 	github.com/6543/go-version v1.3.1
 	github.com/drone-plugins/drone-plugin-lib v0.4.1
 	github.com/joho/godotenv v1.5.1
