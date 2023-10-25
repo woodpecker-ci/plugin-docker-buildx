@@ -99,6 +99,12 @@ func settingsFlags(settings *plugin.Settings) []cli.Flag {
 			Usage:       "sets content of the docker buildkit json config",
 			Destination: &settings.Daemon.BuildkitConfig,
 		},
+		&cli.StringSliceFlag{
+			Name:        "daemon.buildkit-driveropt",
+			EnvVars:     []string{"PLUGIN_BUILDKIT_DRIVEROPT"},
+			Usage:       "adds optional driver-ops args like 'env.http_proxy'",
+			Destination: &settings.Daemon.BuildkitDriverOpt,
+		},
 		&cli.StringFlag{
 			Name:        "dockerfile",
 			EnvVars:     []string{"PLUGIN_DOCKERFILE"},

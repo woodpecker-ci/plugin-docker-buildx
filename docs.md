@@ -102,6 +102,7 @@ If it's not a tag event, and no default branch, automated tags are skipped.
 | `debug`                   | `false`           | enables verbose debug mode for the docker daemon
 | `daemon_off`              | `false`           | disables the startup of the docker daemon
 | `buildkit_config`         | *none*            | sets content of the docker [buildkit TOML config](https://github.com/moby/buildkit/blob/master/docs/buildkitd.toml.md)
+| `buildkit_driveropt`      | *none*            | adds one or multiple `--driver-opt` buildx arguments for the default buildkit builder instance
 | `tags_file`               | *none*            | overrides the `tags` option with values in a file named `.tags`; multiple tags can be specified separated by a comma
 | `context`                 | `.`               | sets the path of the build context to use
 | `auto_tag`                | `false`           | generates tag names automatically based on git branch and git tag, tags supplied via `tags` are additionally added to the auto_tags without suffix
@@ -141,4 +142,56 @@ settings:
       username: "6543"
       password:
         from_secret: cb_token
+```
+
+
+## Using `plugin-docker-buildx` behind a proxy
+
+When performing a docker build behind a corporate proxy one needs to pass through the proxy settings to the plugin.
+
+```yaml
+variables:
+  # proxy config
+  - proxy_conf: &proxy_conf
+    - http_proxy: 'http://X.Y.Z.Z:3128'
+    - https_proxy: 'http://X.Y.Z.Z:3128'
+    - no_proxy: '.my-subdomain.com'
+  # deployment targets
+  - &publish_repos 'codeberg.org/test'
+  # logins for deployment targets
+  - publish_logins: &publish_logins
+    - registry: https://codeberg.org
+      username:
+        from_secret: CODEBERG_USER
+      password:
+        from_secret: CODEBERG_TOKEN
+
+steps:
+  test:
+    image: woodpeckerci/plugin-docker-buildx:2
+    environment:
+      # adding proxy in env for the plugin runtime itself.
+      - <<: *proxy_conf
+    privileged: true
+    settings:
+      dry_run: true
+      repo: *publish_repos
+      dockerfile: Dockerfile.multi
+      platforms: linux/amd64
+      auto_tag: true
+      logins: *publish_logins
+      # Adding custom dns server to lookup internal Docker Hub mirror.
+      # custom_dns:
+      #   - 192.168.55.31
+      #   - 192.168.55.32
+      # Adding an optional Docker Hub mirror for the nested dockerd.
+      # mirror: https://my-mirror.example.com
+      build_args:
+        # passthrough proxy config to the build process and Dockerfile CMDs itself.
+        - <<: *proxy_conf
+      # add driver-opt http config to tell buildkit + buildx to resolve external checksums through a proxy. 
+      buildkit_driveropt:
+        - 'env.http_proxy=http://X.Y.Z.Z:3128'
+        - 'env.https_proxy=http://X.Y.Z.Z:3128'
+        - 'env.no_proxy=.my-subdomain.com'
 ```

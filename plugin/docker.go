@@ -41,6 +41,10 @@ func commandBuilder(daemon Daemon) *exec.Cmd {
 		args = append(args, "--config", buildkitConfig)
 	}
 
+	for _, driveropt := range daemon.BuildkitDriverOpt.Value() {
+		args = append(args, "--driver-opt", driveropt)
+	}
+	
 	return exec.Command(dockerExe, args...)
 }
 
