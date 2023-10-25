@@ -5,13 +5,13 @@ when:
       - ${CI_REPO_DEFAULT_BRANCH}
 
 variables:
-    - &golang 'golang:1.21'
-    - &build_plugin 'woodpeckerci/plugin-docker-buildx:2.1.0'
-    - base_settings: &base_buildx_settings
-        platforms: 'linux/amd64,linux/arm64'
-        dockerfile: Dockerfile.multiarch
-        auto_tag: true
-        repo: woodpeckerci/plugin-docker-buildx,codeberg.org/woodpecker-plugins/docker-buildx
+  - &golang "golang:1.21"
+  - &build_plugin "woodpeckerci/plugin-docker-buildx:2.1.0"
+  - base_settings: &base_buildx_settings
+      platforms: "linux/amd64,linux/arm64"
+      dockerfile: Dockerfile.multiarch
+      auto_tag: true
+      repo: woodpeckerci/plugin-docker-buildx,codeberg.org/woodpecker-plugins/docker-buildx
 
 steps:
   vendor:
@@ -53,4 +53,17 @@ steps:
 
     when:
       event: [push, tag, cron]
+      branch: ${CI_REPO_DEFAULT_BRANCH}
+
+  # TODO: replace by plugin-ready-release-go once it supports gitea
+  gitea-release:
+    image: "woodpeckerci/plugin-gitea-release:0.3.1"
+    settings:
+      base_url: https://codeberg.org
+      title: ${CI_COMMIT_TAG}
+      api_key:
+        from_secret: gitea_token
+      target: main
+    when:
+      event: [tag]
       branch: ${CI_REPO_DEFAULT_BRANCH}
