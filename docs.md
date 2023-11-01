@@ -103,7 +103,7 @@ If it's not a tag event, and no default branch, automated tags are skipped.
 | `daemon_off`              | `false`           | disables the startup of the docker daemon
 | `buildkit_config`         | *none*            | sets content of the docker [buildkit TOML config](https://github.com/moby/buildkit/blob/master/docs/buildkitd.toml.md)
 | `buildkit_driveropt`      | *none*            | adds one or multiple `--driver-opt` buildx arguments for the default buildkit builder instance
-| `tags_file`               | *none*            | overrides the `tags` option with values in a file named `.tags`; multiple tags can be specified separated by a comma
+| `tags_file`               | *none*            | overrides the `tags` option with values in a file named `.tags`; multiple tags can be specified separated by a newline
 | `context`                 | `.`               | sets the path of the build context to use
 | `auto_tag`                | `false`           | generates tag names automatically based on git branch and git tag, tags supplied via `tags` are additionally added to the auto_tags without suffix
 | `default_suffix"`/`auto_tag_suffix`| *none*   | generates tag names with the given suffix
