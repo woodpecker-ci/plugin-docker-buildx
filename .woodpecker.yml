@@ -3,6 +3,7 @@ when:
   - event: push
     branch:
       - ${CI_REPO_DEFAULT_BRANCH}
+      - renovate/*
 
 variables:
   - &golang "golang:1.21"
@@ -31,7 +32,9 @@ steps:
       dry_run: true
     when:
       event: pull_request
-      branch: main
+      branch:
+        - ${CI_REPO_DEFAULT_BRANCH}
+        - renovate/*
 
   publish:
     image: *build_plugin
