@@ -19,6 +19,8 @@ github.com/drone-plugins/drone-plugin-lib v0.4.0 h1:qywEYGhquUuid6zNLmKia8CWY1TU
 github.com/drone-plugins/drone-plugin-lib v0.4.0/go.mod h1:EgqogX38GoJFtckeSQyhBJYX8P+KWBPhdprAVvyRxF8=
 github.com/drone-plugins/drone-plugin-lib v0.4.1 h1:47rZlmcMpr1hSp+6Gl+1Z4t+efi/gMQU3lxukC1Yg64=
 github.com/drone-plugins/drone-plugin-lib v0.4.1/go.mod h1:KwCu92jFjHV3xv2hu5Qg/8zBNvGwbhoJDQw/EwnTvoM=
+github.com/drone-plugins/drone-plugin-lib v0.4.2 h1:EiJ3Kco6ypP5noBQqVt1bBbuO1eUAumtPvLTX/NVAYg=
+github.com/drone-plugins/drone-plugin-lib v0.4.2/go.mod h1:KwCu92jFjHV3xv2hu5Qg/8zBNvGwbhoJDQw/EwnTvoM=
 github.com/google/go-cmp v0.3.0/go.mod h1:8QqcDgzrUqlUb/G2PQTWiueGozuR1884gddMywk6iLU=
 github.com/joho/godotenv v1.4.0 h1:3l4+N6zfMWnkbPEXKng2o2/MR5mSwTrBih4ZEkkz1lg=
 github.com/joho/godotenv v1.4.0/go.mod h1:f4LDr5Voq0i2e/R5DDNOoa2zzDfwtkZa6DnEwAbqwq4=
