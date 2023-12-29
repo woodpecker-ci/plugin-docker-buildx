@@ -289,5 +289,47 @@ func settingsFlags(settings *plugin.Settings) []cli.Flag {
 			Usage:       "sets build output type and destination configuration",
 			Destination: &settings.Build.Output,
 		},
+		&cli.StringFlag{
+			Name:        "ecr.aws_access_key_id",
+			EnvVars:     []string{"PLUGIN_AWS_ACCESS_KEY_ID"},
+			Usage:       "Access Key ID for AWS",
+			Destination: &settings.AwsAccessKeyId,
+		},
+		&cli.StringFlag{
+			Name:        "ecr.aws_secret_access_key_id",
+			EnvVars:     []string{"PLUGIN_AWS_SECRET_ACCESS_KEY"},
+			Usage:       "Secret Access Key for AWS",
+			Destination: &settings.AwsSecretAccessKey,
+		},
+		&cli.StringFlag{
+			Name:        "ecr.aws_region",
+			EnvVars:     []string{"PLUGIN_AWS_REGION"},
+			Usage:       "AWS region to use",
+			Destination: &settings.AwsRegion,
+		},
+		&cli.BoolFlag{
+			Name:        "ecr.create_repository",
+			EnvVars:     []string{"PLUGIN_CREATE_REPOSITORY"},
+			Usage:       "creates the ECR repository if it does not exist",
+			Destination: &settings.CreateRepository,
+		},
+		&cli.StringFlag{
+			Name:        "ecr.lifecycle_policy",
+			EnvVars:     []string{"PLUGIN_LIFECYCLE_POLICY"},
+			Usage:       "AWS ECR lifecycle policy",
+			Destination: &settings.LifecyclePolicy,
+		},
+		&cli.StringFlag{
+			Name:    "ecr.repository_policy",
+			EnvVars: []string{"PLUGIN_REPOSITORY_POLICY"},
+			Usage:       "AWS ECR repository policy",
+			Destination: &settings.RepositoryPolicy,
+		},
+		&cli.BoolFlag{
+			Name:    "ecr.scan_on_push",
+			EnvVars: []string{"PLUGIN_SCAN_ON_PUSH"},
+			Usage:       "AWS: whether to enable image scanning on push",
+			Destination: &settings.ScanOnPush,
+		},
 	}
 }

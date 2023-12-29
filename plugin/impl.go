@@ -37,11 +37,17 @@ type Daemon struct {
 
 // Login defines Docker login parameters.
 type Login struct {
+	// Generic
 	Registry string // Docker registry address
 	Username string // Docker registry username
 	Password string // Docker registry password
 	Email    string // Docker registry email
 	Config   string // Docker Auth Config
+
+	// ECR
+	Aws_access_key_id     string `json:"aws_access_key_id"`     // AWS access key id
+	Aws_secret_access_key string `json:"aws_secret_access_key"` // AWS secret access key
+	Aws_region            string `json:"aws_region"`            // AWS region
 }
 
 // Build defines Docker build parameters.
@@ -75,6 +81,16 @@ type Build struct {
 
 // Settings for the Plugin.
 type Settings struct {
+	// ECR
+	AwsRegion          string `json:"aws_region"` // AWS region
+	ScanOnPush         bool   // ECR scan on push
+	RepositoryPolicy   string // ECR repository policy
+	LifecyclePolicy    string // ECR lifecycle policy
+	CreateRepository   bool   // ECR create repository
+	AwsAccessKeyId     string `json:"aws_access_key_id"`     // AWS access key id
+	AwsSecretAccessKey string `json:"aws_secret_access_key"` // AWS secret access key
+
+	// Generic
 	Daemon       Daemon
 	Logins       []Login
 	LoginsRaw    string
@@ -98,6 +114,17 @@ func (p *Plugin) InitSettings() error {
 
 	p.settings.Build.Branch = p.pipeline.Repo.Branch
 	p.settings.Build.Ref = p.pipeline.Commit.Ref
+
+	// check if any Login struct contains AWS credentials
+	for _, login := range p.settings.Logins {
+		if strings.Contains(login.Registry, "amazonaws.com") {
+			p.EcrInit()
+		}
+	}
+
+	if p.settings.AwsAccessKeyId != "" && p.settings.AwsSecretAccessKey != "" {
+		p.EcrInit()
+	}
 
 	if len(p.settings.Logins) == 0 {
 		p.settings.Logins = []Login{p.settings.DefaultLogin}
