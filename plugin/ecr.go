@@ -90,19 +90,19 @@ func (p *Plugin) EcrInit() {
 		repo = fmt.Sprintf("%s/%s", registry, repo)
 	}
 
-	if p.settings.CreateRepository {
-		err = ensureRepoExists(svc, trimHostname(repo, registry), p.settings.ScanOnPush)
+	if p.settings.EcrCreateRepository {
+		err = ensureRepoExists(svc, trimHostname(repo, registry), p.settings.EcrScanOnPush)
 		if err != nil {
 			log.Fatalf("error creating ECR repo: %v", err)
 		}
-		err = updateImageScannningConfig(svc, trimHostname(repo, registry), p.settings.ScanOnPush)
+		err = updateImageScannningConfig(svc, trimHostname(repo, registry), p.settings.EcrScanOnPush)
 		if err != nil {
 			log.Fatalf("error updating scan on push for ECR repo: %v", err)
 		}
 	}
 
-	if p.settings.LifecyclePolicy != "" {
-		p, err := os.ReadFile(p.settings.LifecyclePolicy)
+	if p.settings.EcrLifecyclePolicy != "" {
+		p, err := os.ReadFile(p.settings.EcrLifecyclePolicy)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -111,8 +111,8 @@ func (p *Plugin) EcrInit() {
 		}
 	}
 
-	if p.settings.RepositoryPolicy != "" {
-		p, err := os.ReadFile(p.settings.RepositoryPolicy)
+	if p.settings.EcrRepositoryPolicy != "" {
+		p, err := os.ReadFile(p.settings.EcrRepositoryPolicy)
 		if err != nil {
 			log.Fatal(err)
 		}

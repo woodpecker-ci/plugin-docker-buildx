@@ -28,17 +28,21 @@ It will automatically generate buildkit configuration to use custom CA certifica
 
 ## Settings
 
-| Settings Name             | Default           | Description
-| --------------------------| ----------------- | --------------------------------------------
-| `dry-run`                 | `false`           | disables docker push
-| `repo`                    | *none*            | sets repository name for the image (can be a list)
-| `username`                | *none*            | sets username to authenticates with
-| `password`                | *none*            | sets password / token to authenticates with
-| `email`                   | *none*            | sets email address to authenticates with
-| `registry`                | `https://index.docker.io/v1/` | sets docker registry to authenticate with
-| `dockerfile`              | `Dockerfile`      | sets dockerfile to use for the image build
-| `tag`/`tags`              | *none*            | sets repository tags to use for the image
-| `platforms`               | *none*            | sets target platform for build
+| Settings Name           | Default                       | Description                                        |
+| ----------------------- | ----------------------------- | -------------------------------------------------- |
+| `dry-run`               | `false`                       | disables docker push                               |
+| `repo`                  | _none_                        | sets repository name for the image (can be a list) |
+| `username`              | _none_                        | sets username to authenticates with                |
+| `password`              | _none_                        | sets password / token to authenticates with        |
+| `aws_access_key_id`     | _none_                        | sets AWS_ACCESS_KEY_ID for AWS ECR auth            |
+| `aws_secret_access_key` | _none_                        | sets AWS_SECRET_ACCESS_KEY for AWS ECR auth        |
+| `aws_region`            | `us-east-1`                   | sets AWS_DEFAULT_REGION for AWS ECR auth           |
+| `password`              | _none_                        | sets password / token to authenticates with        |
+| `email`                 | _none_                        | sets email address to authenticates with           |
+| `registry`              | `https://index.docker.io/v1/` | sets docker registry to authenticate with          |
+| `dockerfile`            | `Dockerfile`                  | sets dockerfile to use for the image build         |
+| `tag`/`tags`            | _none_                        | sets repository tags to use for the image          |
+| `platforms`             | _none_                        | sets target platform for build                     |
 
 ## auto_tag
 
@@ -49,81 +53,85 @@ If it's not a tag event, and no default branch, automated tags are skipped.
 ## Examples
 
 ```yaml
-  publish-next-agent:
-    image: woodpeckerci/plugin-docker-buildx
-    secrets: [docker_username, docker_password]
-    settings:
-      repo: woodpeckerci/woodpecker-agent
-      dockerfile: docker/Dockerfile.agent.multiarch
-      platforms: windows/amd64,darwin/amd64,darwin/arm64,freebsd/amd64,linux/amd64,linux/arm64/v8
-      tag: next
-    when:
-      branch: ${CI_REPO_DEFAULT_BRANCH}
-      event: push
+publish-next-agent:
+  image: woodpeckerci/plugin-docker-buildx
+  secrets: [docker_username, docker_password]
+  settings:
+    repo: woodpeckerci/woodpecker-agent
+    dockerfile: docker/Dockerfile.agent.multiarch
+    platforms: windows/amd64,darwin/amd64,darwin/arm64,freebsd/amd64,linux/amd64,linux/arm64/v8
+    tag: next
+  when:
+    branch: ${CI_REPO_DEFAULT_BRANCH}
+    event: push
 ```
 
 ```yaml
-  publish:
-    image: woodpeckerci/plugin-docker-buildx
-    settings:
-      platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm64/v8,linux/ppc64le,linux/riscv64,linux/s390x
-      repo: codeberg.org/${CI_REPO_OWNER}/hello
-      registry: codeberg.org
-      tags: latest
-      username: ${CI_REPO_OWNER}
-      password:
-        from_secret: cb_token
+publish:
+  image: woodpeckerci/plugin-docker-buildx
+  settings:
+    platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm64/v8,linux/ppc64le,linux/riscv64,linux/s390x
+    repo: codeberg.org/${CI_REPO_OWNER}/hello
+    registry: codeberg.org
+    tags: latest
+    username: ${CI_REPO_OWNER}
+    password:
+      from_secret: cb_token
 ```
 
 ```yaml
-  docker-build:
-    image: woodpeckerci/plugin-docker-buildx
-    settings:
-      repo: codeberg.org/${CI_REPO_OWNER}/hello
-      registry: codeberg.org
-      dry_run: true
-      output: type=oci,dest=${CI_REPO_OWNER}-hello.tar
+docker-build:
+  image: woodpeckerci/plugin-docker-buildx
+  settings:
+    repo: codeberg.org/${CI_REPO_OWNER}/hello
+    registry: codeberg.org
+    dry_run: true
+    output: type=oci,dest=${CI_REPO_OWNER}-hello.tar
 ```
 
 ## Advanced Settings
 
-| Settings Name             | Default           | Description
-| --------------------------| ----------------- | --------------------------------------------
-| `mirror`                  | *none*            | sets a registry mirror to pull images
-| `storage_driver`          | *none*            | sets the docker daemon storage driver
-| `storage_path`            | `/var/lib/docker` | sets the docker daemon storage path
-| `bip`                     | *none*            | allows the docker daemon to bride ip address
-| `mtu`                     | *none*            | sets docker daemon custom mtu setting
-| `custom_dns`              | *none*            | sets custom docker daemon dns server
-| `custom_dns_search`       | *none*            | sets custom docker daemon dns search domain
-| `insecure`                | `false`           | allows the docker daemon to use insecure registries
-| `ipv6`                    | `false`           | enables docker daemon IPv6 support
-| `experimental`            | `false`           | enables docker daemon experimental mode
-| `debug`                   | `false`           | enables verbose debug mode for the docker daemon
-| `daemon_off`              | `false`           | disables the startup of the docker daemon
-| `buildkit_config`         | *none*            | sets content of the docker [buildkit TOML config](https://github.com/moby/buildkit/blob/master/docs/buildkitd.toml.md)
-| `buildkit_driveropt`      | *none*            | adds one or multiple `--driver-opt` buildx arguments for the default buildkit builder instance
-| `tags_file`               | *none*            | overrides the `tags` option with values in a file named `.tags`; multiple tags can be specified separated by a newline
-| `context`                 | `.`               | sets the path of the build context to use
-| `auto_tag`                | `false`           | generates tag names automatically based on git branch and git tag, tags supplied via `tags` are additionally added to the auto_tags without suffix
-| `default_suffix"`/`auto_tag_suffix`| *none*   | generates tag names with the given suffix
-| `default_tag`             | `latest`          | overrides the default tag name used when generating with `auto_tag` enabled
-| `label`/`labels`          | *none*            | sets labels to use for the image in format `<name>=<value>`
-| `default_labels`/`auto_labels` | `true`       | sets docker image labels based on git information
-| `build_args`              | *none*            | sets custom build arguments for the build
-| `build_args_from_env`     | *none*            | forwards environment variables as custom arguments to the build
-| `quiet`                   | `false`           | enables suppression of the build output
-| `target`                  | *none*            | sets the build target to use
-| `cache_from`              | *none*            | sets images to consider as cache sources
-| `pull_image`              | `true`            | enforces to pull base image at build time
-| `compress`                | `false`           | enables compression of the build context using gzip
-| `config`                  | *none*            | sets content of the docker daemon json config
-| `purge`                   | `true`            | enables cleanup of the docker environment at the end of a build
-| `no_cache`                | `false`           | disables the usage of cached intermediate containers
-| `add_host`                | *none*            | sets additional host:ip mapping
-| `output`                  | *none*            | sets build output in format `type=<type>[,<key>=<value>]`
-| `logins`                  | *none*            | option to log into multiple registries
-| `env_file`                | *none*            | load env vars from specified file
+| Settings Name                       | Default           | Description                                                                                                                                        |
+| ----------------------------------- | ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `mirror`                            | _none_            | sets a registry mirror to pull images                                                                                                              |
+| `storage_driver`                    | _none_            | sets the docker daemon storage driver                                                                                                              |
+| `storage_path`                      | `/var/lib/docker` | sets the docker daemon storage path                                                                                                                |
+| `bip`                               | _none_            | allows the docker daemon to bride ip address                                                                                                       |
+| `mtu`                               | _none_            | sets docker daemon custom mtu setting                                                                                                              |
+| `custom_dns`                        | _none_            | sets custom docker daemon dns server                                                                                                               |
+| `custom_dns_search`                 | _none_            | sets custom docker daemon dns search domain                                                                                                        |
+| `insecure`                          | `false`           | allows the docker daemon to use insecure registries                                                                                                |
+| `ipv6`                              | `false`           | enables docker daemon IPv6 support                                                                                                                 |
+| `experimental`                      | `false`           | enables docker daemon experimental mode                                                                                                            |
+| `debug`                             | `false`           | enables verbose debug mode for the docker daemon                                                                                                   |
+| `daemon_off`                        | `false`           | disables the startup of the docker daemon                                                                                                          |
+| `buildkit_config`                   | _none_            | sets content of the docker [buildkit TOML config](https://github.com/moby/buildkit/blob/master/docs/buildkitd.toml.md)                             |
+| `buildkit_driveropt`                | _none_            | adds one or multiple `--driver-opt` buildx arguments for the default buildkit builder instance                                                     |
+| `tags_file`                         | _none_            | overrides the `tags` option with values in a file named `.tags`; multiple tags can be specified separated by a newline                             |
+| `context`                           | `.`               | sets the path of the build context to use                                                                                                          |
+| `auto_tag`                          | `false`           | generates tag names automatically based on git branch and git tag, tags supplied via `tags` are additionally added to the auto_tags without suffix |
+| `default_suffix"`/`auto_tag_suffix` | _none_            | generates tag names with the given suffix                                                                                                          |
+| `default_tag`                       | `latest`          | overrides the default tag name used when generating with `auto_tag` enabled                                                                        |
+| `label`/`labels`                    | _none_            | sets labels to use for the image in format `<name>=<value>`                                                                                        |
+| `default_labels`/`auto_labels`      | `true`            | sets docker image labels based on git information                                                                                                  |
+| `build_args`                        | _none_            | sets custom build arguments for the build                                                                                                          |
+| `build_args_from_env`               | _none_            | forwards environment variables as custom arguments to the build                                                                                    |
+| `quiet`                             | `false`           | enables suppression of the build output                                                                                                            |
+| `target`                            | _none_            | sets the build target to use                                                                                                                       |
+| `cache_from`                        | _none_            | sets images to consider as cache sources                                                                                                           |
+| `pull_image`                        | `true`            | enforces to pull base image at build time                                                                                                          |
+| `compress`                          | `false`           | enables compression of the build context using gzip                                                                                                |
+| `config`                            | _none_            | sets content of the docker daemon json config                                                                                                      |
+| `purge`                             | `true`            | enables cleanup of the docker environment at the end of a build                                                                                    |
+| `no_cache`                          | `false`           | disables the usage of cached intermediate containers                                                                                               |
+| `add_host`                          | _none_            | sets additional host:ip mapping                                                                                                                    |
+| `output`                            | _none_            | sets build output in format `type=<type>[,<key>=<value>]`                                                                                          |
+| `logins`                            | _none_            | option to log into multiple registries                                                                                                             |
+| `env_file`                          | _none_            | load env vars from specified file                                                                                                                  |
+| `ecr_create_repository`             | `false`           | creates the ECR repository if it does not exist                                                                                                    |
+| `ecr_lifecycle_policy`              | _none_            | AWS ECR lifecycle policy                                                                                                                           |
+| `ecr_repository_policy`             | _none_            | AWS ECR repository policy                                                                                                                          |
+| `ecr_scan_on_push`                  | _none_            | AWS: whether to enable image scanning on push                                                                                                      |
 
 ## Multi registry push example
 
@@ -142,8 +150,13 @@ settings:
       username: "6543"
       password:
         from_secret: cb_token
+    - registry: https://<account-id>.dkr.ecr.<region>.amazonaws.com
+      aws_region: <region>
+      aws_access_key_id:
+        from_secret: aws_access_key_id
+      aws_secret_access_key:
+        from_secret: aws_secret_access_key
 ```
-
 
 ## Using `plugin-docker-buildx` behind a proxy
 
@@ -153,18 +166,18 @@ When performing a docker build behind a corporate proxy one needs to pass throug
 variables:
   # proxy config
   - proxy_conf: &proxy_conf
-    - http_proxy: 'http://X.Y.Z.Z:3128'
-    - https_proxy: 'http://X.Y.Z.Z:3128'
-    - no_proxy: '.my-subdomain.com'
+      - http_proxy: "http://X.Y.Z.Z:3128"
+      - https_proxy: "http://X.Y.Z.Z:3128"
+      - no_proxy: ".my-subdomain.com"
   # deployment targets
-  - &publish_repos 'codeberg.org/test'
+  - &publish_repos "codeberg.org/test"
   # logins for deployment targets
   - publish_logins: &publish_logins
-    - registry: https://codeberg.org
-      username:
-        from_secret: CODEBERG_USER
-      password:
-        from_secret: CODEBERG_TOKEN
+      - registry: https://codeberg.org
+        username:
+          from_secret: CODEBERG_USER
+        password:
+          from_secret: CODEBERG_TOKEN
 
 steps:
   test:
@@ -189,9 +202,9 @@ steps:
       build_args:
         # passthrough proxy config to the build process and Dockerfile CMDs itself.
         - <<: *proxy_conf
-      # add driver-opt http config to tell buildkit + buildx to resolve external checksums through a proxy. 
+      # add driver-opt http config to tell buildkit + buildx to resolve external checksums through a proxy.
       buildkit_driveropt:
-        - 'env.http_proxy=http://X.Y.Z.Z:3128'
-        - 'env.https_proxy=http://X.Y.Z.Z:3128'
-        - 'env.no_proxy=.my-subdomain.com'
+        - "env.http_proxy=http://X.Y.Z.Z:3128"
+        - "env.https_proxy=http://X.Y.Z.Z:3128"
+        - "env.no_proxy=.my-subdomain.com"
 ```

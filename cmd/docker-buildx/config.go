@@ -309,27 +309,27 @@ func settingsFlags(settings *plugin.Settings) []cli.Flag {
 		},
 		&cli.BoolFlag{
 			Name:        "ecr.create_repository",
-			EnvVars:     []string{"PLUGIN_CREATE_REPOSITORY"},
+			EnvVars:     []string{"PLUGIN_ECR_CREATE_REPOSITORY"},
 			Usage:       "creates the ECR repository if it does not exist",
-			Destination: &settings.CreateRepository,
+			Destination: &settings.EcrCreateRepository,
 		},
 		&cli.StringFlag{
 			Name:        "ecr.lifecycle_policy",
-			EnvVars:     []string{"PLUGIN_LIFECYCLE_POLICY"},
+			EnvVars:     []string{"PLUGIN_ECR_LIFECYCLE_POLICY"},
 			Usage:       "AWS ECR lifecycle policy",
-			Destination: &settings.LifecyclePolicy,
+			Destination: &settings.EcrLifecyclePolicy,
 		},
 		&cli.StringFlag{
-			Name:    "ecr.repository_policy",
-			EnvVars: []string{"PLUGIN_REPOSITORY_POLICY"},
+			Name:        "ecr.repository_policy",
+			EnvVars:     []string{"PLUGIN_ECR_REPOSITORY_POLICY"},
 			Usage:       "AWS ECR repository policy",
-			Destination: &settings.RepositoryPolicy,
+			Destination: &settings.EcrRepositoryPolicy,
 		},
 		&cli.BoolFlag{
-			Name:    "ecr.scan_on_push",
-			EnvVars: []string{"PLUGIN_SCAN_ON_PUSH"},
+			Name:        "ecr.scan_on_push",
+			EnvVars:     []string{"PLUGIN_ECR_SCAN_ON_PUSH"},
 			Usage:       "AWS: whether to enable image scanning on push",
-			Destination: &settings.ScanOnPush,
+			Destination: &settings.EcrScanOnPush,
 		},
 	}
 }

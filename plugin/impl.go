@@ -82,13 +82,13 @@ type Build struct {
 // Settings for the Plugin.
 type Settings struct {
 	// ECR
-	AwsRegion          string `json:"aws_region"` // AWS region
-	ScanOnPush         bool   // ECR scan on push
-	RepositoryPolicy   string // ECR repository policy
-	LifecyclePolicy    string // ECR lifecycle policy
-	CreateRepository   bool   // ECR create repository
-	AwsAccessKeyId     string `json:"aws_access_key_id"`     // AWS access key id
-	AwsSecretAccessKey string `json:"aws_secret_access_key"` // AWS secret access key
+	AwsRegion           string `json:"aws_region"`            // AWS region
+	EcrScanOnPush       bool   `json:"ecr_scan_on_push"`      // ECR scan on push
+	EcrRepositoryPolicy string `json:"ecr_repository_policy"` // ECR repository policy
+	EcrLifecyclePolicy  string `json:"ecr_lifecycle_policy"`  // ECR lifecycle policy
+	EcrCreateRepository bool   `json:"ecr_create_repository"` // ECR create repository
+	AwsAccessKeyId      string `json:"aws_access_key_id"`     // AWS access key id
+	AwsSecretAccessKey  string `json:"aws_secret_access_key"` // AWS secret access key
 
 	// Generic
 	Daemon       Daemon
