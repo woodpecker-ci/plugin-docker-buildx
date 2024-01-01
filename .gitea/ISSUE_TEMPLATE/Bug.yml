@@ -1,0 +1,69 @@
+name: 🐞 Bug Report
+about: This template is used to report bugs!
+title: ''
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        > **Note**: This bug report is only for content provided in this repository!
+        >
+        > - Make sure you're able to reproduce the error in the lastest version of this package.
+        > - Search of already existing issues.
+        > - Refer to the known issues and FAQ section.
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: 💣 Steps to reproduce
+      description: Describe ho to reproduce the error.
+      value: |
+        ```bash
+
+        ```
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 🚀 Expected behaviour
+      description: Describe what should happen.
+      value: |
+        ```bash
+
+        ```
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: 💥 Actual behaviour
+      description: Describe what actually happens.
+      value: |
+        ```bash
+
+        ```
+    validations:
+      required: true
+  - type: textarea
+    id: env
+    attributes:
+      label: 📓 Environment data
+      description: You can add addional environment data here.
+      placeholder: |
+        ```bash
+
+        ```
+  - type: textarea
+    id: img
+    attributes:
+      label: 🖼️ Screenshots
+      description: Paste your screenshots here.
+      placeholder: Copy-Paste or Drag-and-Drop your images...
+  - type: textarea
+    id: refs
+    attributes:
+      label: 🔖 Refs
+      description: A place for additional references to other issues and PRs.
+      placeholder: |
+        - reopens #999

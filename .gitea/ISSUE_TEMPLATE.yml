@@ -1,0 +1,16 @@
+name: Default
+about: Use this template if nothing seems to work.
+title: ''
+body:
+  - type: markdown
+    attributes:
+      value: |
+        > **Note**: Thanks for taking the time to fill out this bug report!
+  - type: textarea
+    id: content
+    attributes:
+      label: ❔ What happened
+      description:  Simply ask your question here.
+      placeholder: Tell us what you want to know...
+    validations:
+      required: true

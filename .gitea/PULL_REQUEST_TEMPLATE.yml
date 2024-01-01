@@ -1,0 +1,41 @@
+name: Pull Request
+about: General pull request
+title: ""
+body:
+  - type: markdown
+    attributes:
+      value: |
+        > **Note**: Thanks for contributing to this project with your pull request!
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: 📖 Summary
+      description: Provide a summary of your changes. Also descibe the why...
+      placeholder: Tell us about your code changes.
+
+    validations:
+      required: true
+  - type: dropdown
+    id: testplan
+    attributes:
+      label: 📑 Test Plan
+      description: How did you test your code changes?
+      options:
+        - ✅ CI pipeline tests (Default)
+        - 🤔 Custom test
+        - 💣 No test Plan
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: 💬 Details
+      description: Add your custom test details or justification for missing tests here.
+      placeholder: First, solve the problem. Then, write the code.
+  - type: textarea
+    id: notes
+    attributes:
+      label: 📚 Additional Notes
+      description: A place for additional notes or linking references.
+      placeholder: Software and cathedrals are much the same - First we build them, then we pray.
