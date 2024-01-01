@@ -6,36 +6,25 @@ body:
     attributes:
       value: |
         > **Note**: Thanks for contributing to this project with your pull request!
-
   - type: textarea
     id: summary
     attributes:
       label: 📖 Summary
-      description: Provide a summary of your changes. Also descibe the why...
-      placeholder: Tell us about your code changes.
-
+      description: Provide a concise summary of the changes. Ideally broken down to multiple bullet points. Please add details and longer text blocks to "Details" below.
     validations:
       required: true
   - type: dropdown
-    id: testplan
+    id: build_pr_images
     attributes:
-      label: 📑 Test Plan
-      description: How did you test your code changes?
+      label: 📑 Build PR Images?
+      description: Should docker images be built for this PR and uploaded to Dockerhub? If so, a maintainer will add the `build_pr_images` label to this PR if this option is selected.
       options:
-        - ✅ CI pipeline tests (Default)
-        - 🤔 Custom test
-        - 💣 No test Plan
+        - PR images are not needed
+        - ✅ Yes, please build PR images
     validations:
       required: true
   - type: textarea
     id: details
     attributes:
       label: 💬 Details
-      description: Add your custom test details or justification for missing tests here.
-      placeholder: First, solve the problem. Then, write the code.
-  - type: textarea
-    id: notes
-    attributes:
-      label: 📚 Additional Notes
-      description: A place for additional notes or linking references.
-      placeholder: Software and cathedrals are much the same - First we build them, then we pray.
+      description: Add additional information here.
