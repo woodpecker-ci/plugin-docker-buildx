@@ -4,3 +4,7 @@ MD013: False
 MD041: False
 MD004:
   style: dash
+
+MD033:
+  # Allowed elements
+  allowed_elements: [details, summary, img, a, br, p]
