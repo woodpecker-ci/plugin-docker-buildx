@@ -14,11 +14,3 @@ body:
       placeholder: Tell us what you want to know...
     validations:
       required: true
-blank_issues_enabled: true
-contact_links:
-  - name: Ask a question in our Matrix room
-    about: If you prefer a chat-like conversation or in need for quick help, this might be an alternative to opening an issue.
-    url: https://matrix.to/#/#woodpecker:matrix.org
-  - name: Frequently Asked Questions
-    url: https://woodpecker-ci.org/faq
-    about: Check the FAQs for common questions.
