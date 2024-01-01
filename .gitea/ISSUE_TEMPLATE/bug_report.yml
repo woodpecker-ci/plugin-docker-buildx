@@ -3,6 +3,7 @@ about: This template is used to report bugs!
 title: ""
 labels:
   - bug
+body:
   - type: markdown
     attributes:
       value: |
