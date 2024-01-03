@@ -85,7 +85,7 @@ docker-build:
   settings:
     repo: codeberg.org/${CI_REPO_OWNER}/hello
     registry: codeberg.org
-    dry_run: true
+    dry-run: true
     output: type=oci,dest=${CI_REPO_OWNER}-hello.tar
 ```
 
@@ -187,7 +187,7 @@ steps:
       - <<: *proxy_conf
     privileged: true
     settings:
-      dry_run: true
+      dry-run: true
       repo: *publish_repos
       dockerfile: Dockerfile.multi
       platforms: linux/amd64
