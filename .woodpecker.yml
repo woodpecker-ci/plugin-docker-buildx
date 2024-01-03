@@ -29,7 +29,7 @@ steps:
     settings:
       <<: *base_buildx_settings
       repo: test
-      dry_run: true
+      dry-run: true
     when:
       event: pull_request
       branch:
