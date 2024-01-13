@@ -1,6 +1,6 @@
 ---
 name: Docker Buildx
-icon: https://woodpecker-ci.org/img/logo.svg
+icon: https://codeberg.org/woodpecker-plugins/docker-buildx/raw/branch/main/docker.svg
 description: plugin to build multiarch Docker images with buildx
 authors: Woodpecker Authors
 tags: [docker, image, container, build]
