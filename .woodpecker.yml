@@ -53,10 +53,20 @@ steps:
             from_secret: cb_username
           password:
             from_secret: cb_password
-
     when:
       event: [push, tag, cron]
       branch: ${CI_REPO_DEFAULT_BRANCH}
+
+  publish_pr_image:
+    image: *build_plugin
+    settings:
+      <<: *base_buildx_settings
+      tag: pull_${CI_COMMIT_PULL_REQUEST}
+      build_args: *build_args
+      logins: *login_setting
+    when:
+      evaluate: 'CI_COMMIT_PULL_REQUEST_LABELS contains "build_pr_images"'
+      event: pull_request
 
   # TODO: replace by plugin-ready-release-go once it supports gitea
   gitea-release:
