@@ -105,6 +105,7 @@ docker-build:
 | `experimental`                      | `false`           | enables docker daemon experimental mode                                                                                                            |
 | `debug`                             | `false`           | enables verbose debug mode for the docker daemon                                                                                                   |
 | `daemon_off`                        | `false`           | disables the startup of the docker daemon                                                                                                          |
+| `buildkit_debug`                    | _none_            | enables debug output of buildkit
 | `buildkit_config`                   | _none_            | sets content of the docker [buildkit TOML config](https://github.com/moby/buildkit/blob/master/docs/buildkitd.toml.md)                             |
 | `buildkit_driveropt`                | _none_            | adds one or multiple `--driver-opt` buildx arguments for the default buildkit builder instance                                                     |
 | `tags_file`                         | _none_            | overrides the `tags` option with values in a file named `.tags`; multiple tags can be specified separated by a newline                             |

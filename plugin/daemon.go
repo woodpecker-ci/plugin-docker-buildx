@@ -6,11 +6,10 @@ import (
 )
 
 const (
-	dockerExe              = "/usr/local/bin/docker"
-	dockerdExe             = "/usr/local/bin/dockerd"
-	dockerHome             = "/root/.docker/"
-	buildkitConfig         = "/tmp/buildkit.toml"
-	buildkitConfigTemplate = "[registry.\"%s\"]\n  ca=[\"%s\"]\n"
+	dockerExe      = "/usr/local/bin/docker"
+	dockerdExe     = "/usr/local/bin/dockerd"
+	dockerHome     = "/root/.docker/"
+	buildkitConfig = "/tmp/buildkit.toml"
 )
 
 func (p Plugin) startDaemon() {

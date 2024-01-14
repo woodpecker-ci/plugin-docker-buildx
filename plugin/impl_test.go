@@ -76,3 +76,19 @@ func TestDefaultLogin(t *testing.T) {
 		assert.EqualValues(t, "https://codeberg.org", s.Logins[0].Registry)
 	}
 }
+
+func TestWriteBuildkitConfig(t *testing.T) {
+	settings := defaultSettings
+	assert.NoError(t, newSettingsOnly(&settings).Validate())
+	assert.EqualValues(t, "", settings.Daemon.BuildkitConfig)
+
+	settings = defaultSettings
+	settings.Daemon.BuildkitDebug = true
+	assert.NoError(t, newSettingsOnly(&settings).Validate())
+	assert.EqualValues(t, "debug = true\n\n[registry]\n", settings.Daemon.BuildkitConfig)
+
+	settings = defaultSettings
+	settings.Daemon.Mirror = "mirror.example.com"
+	assert.NoError(t, newSettingsOnly(&settings).Validate())
+	assert.EqualValues(t, "debug = false\n\n[registry]\n[registry.'docker.io']\nmirrors = ['mirror.example.com']\nca = []\n", settings.Daemon.BuildkitConfig)
+}

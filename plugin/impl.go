@@ -10,6 +10,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/pelletier/go-toml/v2"
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
 
@@ -23,7 +24,7 @@ type Daemon struct {
 	Insecure          bool            // Docker daemon enable insecure registries
 	StorageDriver     string          // Docker daemon storage driver
 	StoragePath       string          // Docker daemon storage path
-	Disabled          bool            // DOcker daemon is disabled (already running)
+	Disabled          bool            // Docker daemon is disabled (already running)
 	Debug             bool            // Docker daemon started in debug mode
 	Bip               string          // Docker daemon network bridge IP address
 	DNS               cli.StringSlice // Docker daemon dns server
@@ -33,6 +34,7 @@ type Daemon struct {
 	Experimental      bool            // Docker daemon enable experimental mode
 	BuildkitConfig    string          // Docker buildkit config
 	BuildkitDriverOpt cli.StringSlice // Docker buildkit driveropt args
+	BuildkitDebug     bool            // Docker buildkit debug setting
 }
 
 // Login defines Docker login parameters.
@@ -202,6 +204,10 @@ func (p *Plugin) Validate() error {
 		p.settings.Build.Labels = *cli.NewStringSlice(p.Labels()...)
 	}
 
+	if err := p.generateBuildkitConfig(); err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -217,31 +223,75 @@ func (p *Plugin) sanitizedUserTags() []string {
 	return tags
 }
 
-func (p *Plugin) writeBuildkitConfig() error {
-	// no buildkit config, automatically generate buildkit configuration to use a custom CA certificate for each registry
-	if p.settings.Daemon.BuildkitConfig == "" && p.settings.Daemon.Registry != "" {
-		for _, login := range p.settings.Logins {
-			if registry := login.Registry; registry != "" {
-				u, err := url.Parse(registry)
-				if err != nil {
-					return fmt.Errorf("could not parse registry address: %s: %v", registry, err)
-				}
-				if u.Host != "" {
-					registry = u.Host
-				}
+type BuildkitConfigTOML struct {
+	Debug    bool                    `toml:"debug"` // needs to be public for toml lib to use
+	Registry map[string]RegistryInfo `toml:"registry"`
+}
 
-				caPath := fmt.Sprintf("/etc/docker/certs.d/%s/ca.crt", registry)
-				ca, err := os.Open(caPath)
-				if err != nil && !os.IsNotExist(err) {
-					logrus.Warnf("error reading %s: %v", caPath, err)
-				} else if err == nil {
-					ca.Close()
-					p.settings.Daemon.BuildkitConfig += fmt.Sprintf(buildkitConfigTemplate, registry, caPath)
+type RegistryInfo struct {
+	Mirrors []string `toml:"mirrors"`
+	CA      []string `toml:"ca"`
+}
+
+func (p *Plugin) generateBuildkitConfig() error {
+	// no buildkit config, automatically generate buildkit configuration
+	if p.settings.Daemon.BuildkitConfig == "" {
+
+		cfg := BuildkitConfigTOML{}
+		cfg.Registry = map[string]RegistryInfo{}
+
+		if p.settings.Daemon.BuildkitDebug {
+			cfg.Debug = p.settings.Daemon.BuildkitDebug
+			logrus.Println("buildkit debug enabled")
+		}
+
+		if p.settings.Daemon.Mirror != "" {
+			cfg.Registry["docker.io"] = RegistryInfo{
+				Mirrors: []string{p.settings.Daemon.Mirror},
+			}
+		}
+
+		// use a custom CA certificate for each registry
+		if p.settings.Daemon.Registry != "" {
+			for _, login := range p.settings.Logins {
+				if registry := login.Registry; registry != "" {
+					u, err := url.Parse(registry)
+					if err != nil {
+						return fmt.Errorf("could not parse registry address: %s: %v", registry, err)
+					}
+					if u.Host != "" {
+						registry = u.Host
+					}
+
+					caPath := fmt.Sprintf("/etc/docker/certs.d/%s/ca.crt", registry)
+					ca, err := os.Open(caPath)
+					if err != nil && !os.IsNotExist(err) {
+						logrus.Warnf("error reading %s: %v", caPath, err)
+					} else if err == nil {
+						ca.Close()
+						// add registry and ca path to buildkit.toml
+						cfg.Registry[registry] = RegistryInfo{
+							CA: []string{caPath},
+						}
+					}
 				}
+			}
+		}
+
+		if cfg.Debug || len(cfg.Registry) > 0 {
+			tomlData, err := toml.Marshal(cfg)
+			if err != nil {
+				return fmt.Errorf("error marshaling buildkit.toml: %s", err)
+			} else {
+				p.settings.Daemon.BuildkitConfig = string(tomlData)
 			}
 		}
 	}
 
+	return nil
+}
+
+func (p *Plugin) writeBuildkitConfig() error {
 	// save buildkit config as described
 	if p.settings.Daemon.BuildkitConfig != "" {
 		err := os.WriteFile(buildkitConfig, []byte(p.settings.Daemon.BuildkitConfig), 0o600)

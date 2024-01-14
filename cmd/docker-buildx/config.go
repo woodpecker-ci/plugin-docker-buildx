@@ -99,6 +99,12 @@ func settingsFlags(settings *plugin.Settings) []cli.Flag {
 			Usage:       "sets content of the docker buildkit json config",
 			Destination: &settings.Daemon.BuildkitConfig,
 		},
+		&cli.BoolFlag{
+			Name:        "daemon.buildkit-debug",
+			EnvVars:     []string{"PLUGIN_BUILDKIT_DEBUG"},
+			Usage:       "enables buildkit debug",
+			Destination: &settings.Daemon.BuildkitDebug,
+		},
 		&cli.StringSliceFlag{
 			Name:        "daemon.buildkit-driveropt",
 			EnvVars:     []string{"PLUGIN_BUILDKIT_DRIVEROPT"},
