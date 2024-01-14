@@ -13,6 +13,19 @@ variables:
       dockerfile: Dockerfile.multiarch
       auto_tag: true
       repo: woodpeckerci/plugin-docker-buildx,codeberg.org/woodpecker-plugins/docker-buildx
+  - &login_setting
+      # Default DockerHub login
+      - registry: https://index.docker.io/v1/
+        username:
+          from_secret: docker_username
+        password:
+          from_secret: docker_password
+      # Additional Codeberg login
+      - registry: https://codeberg.org
+        username:
+          from_secret: cb_username
+        password:
+          from_secret: cb_password
 
 steps:
   vendor:
@@ -40,19 +53,7 @@ steps:
     image: *build_plugin
     settings:
       <<: *base_buildx_settings
-      logins:
-        # Default DockerHub login
-        - registry: https://index.docker.io/v1/
-          username:
-            from_secret: docker_username
-          password:
-            from_secret: docker_password
-        # Additional Codeberg login
-        - registry: https://codeberg.org
-          username:
-            from_secret: cb_username
-          password:
-            from_secret: cb_password
+      logins: *login_setting
     when:
       event: [push, tag, cron]
       branch: ${CI_REPO_DEFAULT_BRANCH}
@@ -62,7 +63,6 @@ steps:
     settings:
       <<: *base_buildx_settings
       tag: pull_${CI_COMMIT_PULL_REQUEST}
-      build_args: *build_args
       logins: *login_setting
     when:
       evaluate: 'CI_COMMIT_PULL_REQUEST_LABELS contains "build_pr_images"'
