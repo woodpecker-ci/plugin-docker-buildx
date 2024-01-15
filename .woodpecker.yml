@@ -34,10 +34,24 @@ steps:
 
   test:
     image: *golang
+    depends_on: vendor
     commands: go test -cover ./...
+
+  lint-editorconfig:
+    image: docker.io/mstruebing/editorconfig-checker:2.7.2
+    when:
+      event: pull_request
+
+  lint-format:
+    image: *golang
+    depends_on: vendor
+    commands: make formatcheck
+    when:
+      event: pull_request
 
   publish-dryrun:
     image: *build_plugin
+    depends_on: test
     pull: true
     settings:
       <<: *base_buildx_settings
@@ -51,6 +65,7 @@ steps:
 
   publish:
     image: *build_plugin
+    depends_on: test
     settings:
       <<: *base_buildx_settings
       logins: *login_setting
@@ -60,6 +75,7 @@ steps:
 
   publish_pr_image:
     image: *build_plugin
+    depends_on: test
     settings:
       <<: *base_buildx_settings
       tag: pull_${CI_COMMIT_PULL_REQUEST}
@@ -71,6 +87,7 @@ steps:
   # TODO: replace by plugin-ready-release-go once it supports gitea
   gitea-release:
     image: "woodpeckerci/plugin-gitea-release:0.3.1"
+    depends_on: test
     settings:
       base_url: https://codeberg.org
       title: ${CI_COMMIT_TAG}

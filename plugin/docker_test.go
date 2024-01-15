@@ -10,14 +10,13 @@ import (
 )
 
 func TestCommandBuilder(t *testing.T) {
-
 	tests := []struct {
 		Name      string
 		Daemon    Daemon
 		Input     string
 		WantedLen int
 		Skip      bool
-		Excuse	string
+		Excuse    string
 	}{
 		{
 			Name:      "Single driver-opt value",
@@ -29,15 +28,14 @@ func TestCommandBuilder(t *testing.T) {
 			Name:      "Single driver-opt value with comma",
 			Input:     "no_proxy=.mydomain,.sub.domain.com",
 			WantedLen: 1,
-			Skip: true,
-			Excuse: "Can be enabled whenever #94 is fixed.",
-
+			Skip:      true,
+			Excuse:    "Can be enabled whenever #94 is fixed.",
 		},
 	}
 
 	for _, test := range tests {
 		t.Run(test.Name, func(t *testing.T) {
-			if (test.Skip) {
+			if test.Skip {
 				t.Skip(fmt.Printf("%v skipped. %v", test.Name, test.Excuse))
 			}
 			// prepare test values to mock plugin call with settings
@@ -68,5 +66,4 @@ func TestCommandBuilder(t *testing.T) {
 			assert.Len(t, test.Daemon.BuildkitDriverOpt.Value(), test.WantedLen)
 		})
 	}
-
 }

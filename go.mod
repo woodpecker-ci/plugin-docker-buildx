@@ -8,6 +8,7 @@ require (
 	github.com/aws/aws-sdk-go v1.49.17
 	github.com/drone-plugins/drone-plugin-lib v0.4.2
 	github.com/joho/godotenv v1.5.1
+	github.com/pelletier/go-toml/v2 v2.1.1
 	github.com/sirupsen/logrus v1.9.3
 	github.com/stretchr/testify v1.8.4
 	github.com/urfave/cli/v2 v2.27.1
@@ -20,7 +21,6 @@ require (
 	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
-	github.com/pelletier/go-toml/v2 v2.1.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/xrash/smetrics v0.0.0-20201216005158-039620a65673 // indirect

@@ -17,14 +17,15 @@ import (
 
 const DefaultRegion = "us-east-1"
 
-var repo string
-var assumeRole string
-var externalID string
-var ecr_login Login
-var aws_region string
+var (
+	repo       string
+	assumeRole string
+	externalID string
+	ecr_login  Login
+	aws_region string
+)
 
 func (p *Plugin) EcrInit() {
-
 	// create a standalone Login object to account for single repo and multi-repo case
 	if len(p.settings.Logins) >= 1 {
 		for _, login := range p.settings.Logins {
@@ -81,7 +82,6 @@ func (p *Plugin) EcrInit() {
 
 	svc := getECRClient(sess, assumeRole, externalID)
 	username, password, registry, err := getAuthInfo(svc)
-
 	if err != nil {
 		log.Fatalf("error getting ECR auth: %v", err)
 	}
@@ -135,7 +135,6 @@ func (p *Plugin) EcrInit() {
 		p.settings.DefaultLogin.Password = password
 		p.settings.DefaultLogin.Registry = registry
 	}
-
 }
 
 func trimHostname(repo, registry string) string {
@@ -168,7 +167,7 @@ func updateImageScannningConfig(svc *ecr.ECR, name string, scanOnPush bool) (err
 	return err
 }
 
-func uploadLifeCyclePolicy(svc *ecr.ECR, lifecyclePolicy string, name string) (err error) {
+func uploadLifeCyclePolicy(svc *ecr.ECR, lifecyclePolicy, name string) (err error) {
 	input := &ecr.PutLifecyclePolicyInput{}
 	input.SetLifecyclePolicyText(lifecyclePolicy)
 	input.SetRepositoryName(name)
@@ -177,7 +176,7 @@ func uploadLifeCyclePolicy(svc *ecr.ECR, lifecyclePolicy string, name string) (e
 	return err
 }
 
-func uploadRepositoryPolicy(svc *ecr.ECR, repositoryPolicy string, name string) (err error) {
+func uploadRepositoryPolicy(svc *ecr.ECR, repositoryPolicy, name string) (err error) {
 	input := &ecr.SetRepositoryPolicyInput{}
 	input.SetPolicyText(repositoryPolicy)
 	input.SetRepositoryName(name)
@@ -209,7 +208,7 @@ func getAuthInfo(svc *ecr.ECR) (username, password, registry string, err error) 
 	return
 }
 
-func getECRClient(sess *session.Session, role string, externalId string) *ecr.ECR {
+func getECRClient(sess *session.Session, role, externalId string) *ecr.ECR {
 	if role == "" {
 		return ecr.New(sess)
 	}
