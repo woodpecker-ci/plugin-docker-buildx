@@ -14,7 +14,9 @@ import (
 var version = "unknown"
 
 func main() {
-	settings := &plugin.Settings{}
+	settings := &plugin.Settings{
+		CustomCertStore: "/etc/docker/certs.d/",
+	}
 
 	if _, err := os.Stat("/run/drone/env"); err == nil {
 		godotenv.Overload("/run/drone/env")

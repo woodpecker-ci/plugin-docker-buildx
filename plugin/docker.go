@@ -179,9 +179,6 @@ func commandDaemon(daemon Daemon) *exec.Cmd {
 	if daemon.IPv6 {
 		args = append(args, "--ipv6")
 	}
-	if len(daemon.Mirror) != 0 {
-		args = append(args, "--registry-mirror", daemon.Mirror)
-	}
 	if len(daemon.Bip) != 0 {
 		args = append(args, "--bip", daemon.Bip)
 	}

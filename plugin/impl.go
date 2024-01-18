@@ -40,12 +40,12 @@ type Daemon struct {
 // Login defines Docker login parameters.
 type Login struct {
 	// Generic
-	Registry string // Docker registry address
-	Username string // Docker registry username
-	Password string // Docker registry password
-	Email    string // Docker registry email
-	Config   string // Docker Auth Config
-
+	Registry string   // Docker registry address
+	Username string   // Docker registry username
+	Password string   // Docker registry password
+	Email    string   // Docker registry email
+	Config   string   // Docker Auth Config
+	Mirrors  []string // Docker registry mirrors
 	// ECR
 	Aws_access_key_id     string `json:"aws_access_key_id"`     // AWS access key id
 	Aws_secret_access_key string `json:"aws_secret_access_key"` // AWS secret access key
@@ -93,13 +93,14 @@ type Settings struct {
 	AwsSecretAccessKey  string `json:"aws_secret_access_key"` // AWS secret access key
 
 	// Generic
-	Daemon       Daemon
-	Logins       []Login
-	LoginsRaw    string
-	DefaultLogin Login
-	Build        Build
-	Dryrun       bool
-	Cleanup      bool
+	Daemon          Daemon
+	Logins          []Login
+	LoginsRaw       string
+	DefaultLogin    Login
+	Build           Build
+	Dryrun          bool
+	Cleanup         bool
+	CustomCertStore string // e.g. for "/etc/docker/certs.d/<registry>/ca.crt"
 }
 
 func (l Login) anonymous() bool {
@@ -126,6 +127,10 @@ func (p *Plugin) InitSettings() error {
 
 	if p.settings.AwsAccessKeyId != "" && p.settings.AwsSecretAccessKey != "" {
 		p.EcrInit()
+	}
+
+	if p.settings.DefaultLogin.Registry != "" && p.settings.Daemon.Mirror != "" {
+		p.settings.DefaultLogin.Mirrors = []string{p.settings.Daemon.Mirror}
 	}
 
 	if len(p.settings.Logins) == 0 {
@@ -224,13 +229,13 @@ func (p *Plugin) sanitizedUserTags() []string {
 }
 
 type BuildkitConfigTOML struct {
-	Debug    bool                    `toml:"debug"` // needs to be public for toml lib to use
-	Registry map[string]RegistryInfo `toml:"registry"`
+	Debug    bool                     `toml:"debug,omitempty"` // needs to be public for toml lib to use
+	Registry map[string]*RegistryInfo `toml:"registry,omitempty"`
 }
 
 type RegistryInfo struct {
-	Mirrors []string `toml:"mirrors"`
-	CA      []string `toml:"ca"`
+	Mirrors []string `toml:"mirrors,omitempty"`
+	CA      []string `toml:"ca,omitempty"`
 }
 
 func (p *Plugin) generateBuildkitConfig() error {
@@ -238,17 +243,11 @@ func (p *Plugin) generateBuildkitConfig() error {
 	if p.settings.Daemon.BuildkitConfig == "" {
 
 		cfg := BuildkitConfigTOML{}
-		cfg.Registry = map[string]RegistryInfo{}
+		cfg.Registry = make(map[string]*RegistryInfo)
 
 		if p.settings.Daemon.BuildkitDebug {
 			cfg.Debug = p.settings.Daemon.BuildkitDebug
 			logrus.Println("buildkit debug enabled")
-		}
-
-		if p.settings.Daemon.Mirror != "" {
-			cfg.Registry["docker.io"] = RegistryInfo{
-				Mirrors: []string{p.settings.Daemon.Mirror},
-			}
 		}
 
 		// use a custom CA certificate for each registry
@@ -263,16 +262,30 @@ func (p *Plugin) generateBuildkitConfig() error {
 						registry = u.Host
 					}
 
-					caPath := fmt.Sprintf("/etc/docker/certs.d/%s/ca.crt", registry)
+					// docker hub fix
+					if registry == "index.docker.io" {
+						registry = "docker.io"
+					}
+
+					caPath := fmt.Sprintf("%s/%s/ca.crt", p.settings.CustomCertStore, registry)
 					ca, err := os.Open(caPath)
 					if err != nil && !os.IsNotExist(err) {
 						logrus.Warnf("error reading %s: %v", caPath, err)
 					} else if err == nil {
 						ca.Close()
+						logrus.Infof("found ca file for '%s' registry", registry)
 						// add registry and ca path to buildkit.toml
-						cfg.Registry[registry] = RegistryInfo{
-							CA: []string{caPath},
+						if cfg.Registry[registry] == nil {
+							cfg.Registry[registry] = new(RegistryInfo)
 						}
+						cfg.Registry[registry].CA = []string{caPath}
+					}
+
+					if len(login.Mirrors) != 0 {
+						if cfg.Registry[registry] == nil {
+							cfg.Registry[registry] = new(RegistryInfo)
+						}
+						cfg.Registry[registry].Mirrors = login.Mirrors
 					}
 				}
 			}
