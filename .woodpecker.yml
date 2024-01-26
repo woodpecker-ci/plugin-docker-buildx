@@ -58,6 +58,7 @@ steps:
       repo: test
       dry-run: true
     when:
+      evaluate: 'not (CI_COMMIT_PULL_REQUEST_LABELS contains "build_pr_images")'
       event: pull_request
       branch:
         - ${CI_REPO_DEFAULT_BRANCH}
