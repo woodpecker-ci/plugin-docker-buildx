@@ -195,17 +195,23 @@ func settingsFlags(settings *plugin.Settings) []cli.Flag {
 			Usage:       "sets the build target to use",
 			Destination: &settings.Build.Target,
 		},
-		&cli.StringSliceFlag{
+		&cli.StringFlag{
 			Name:        "cache-from",
 			EnvVars:     []string{"PLUGIN_CACHE_FROM"},
 			Usage:       "sets images to consider as cache sources",
 			Destination: &settings.Build.CacheFrom,
 		},
-		&cli.StringSliceFlag{
+		&cli.StringFlag{
 			Name:        "cache-to",
 			EnvVars:     []string{"PLUGIN_CACHE_TO"},
 			Usage:       "cache destination for the build cache",
 			Destination: &settings.Build.CacheTo,
+		},
+		&cli.StringSliceFlag{
+			Name:        "cache-images",
+			EnvVars:     []string{"PLUGIN_CACHE_IMAGES"},
+			Usage:       "list of images to use for build cache. applies both to and from flags for each image",
+			Destination: &settings.Build.CacheImages,
 		},
 		&cli.BoolFlag{
 			Name:        "pull-image",

@@ -72,8 +72,9 @@ type Build struct {
 	Target          string          // Docker build target
 	Output          string          // Docker build output
 	Pull            bool            // Docker build pull
-	CacheFrom       cli.StringSlice // Docker build cache-from
-	CacheTo         cli.StringSlice // Docker build cache-to
+	CacheFrom       string          // Docker build cache-from
+	CacheTo         string          // Docker build cache-to
+	CacheImages     cli.StringSlice // Docker build cache images
 	Compress        bool            // Docker build compress
 	Repo            cli.StringSlice // Docker build repository
 	NoCache         bool            // Docker build no-cache

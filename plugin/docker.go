@@ -78,11 +78,15 @@ func commandBuild(build Build, dryrun bool) *exec.Cmd {
 	if build.NoCache {
 		args = append(args, "--no-cache")
 	}
-	for _, arg := range build.CacheFrom.Value() {
-		args = append(args, "--cache-from", arg)
+	if build.CacheFrom != "" {
+		args = append(args, "--cache-from", build.CacheFrom)
 	}
-	for _, arg := range build.CacheTo.Value() {
-		args = append(args, "--cache-to", arg)
+	if build.CacheTo != "" {
+		args = append(args, "--cache-to", build.CacheTo)
+	}
+	for _, arg := range build.CacheImages.Value() {
+		args = append(args, "--cache-from", arg)
+		args = append(args, string("--cache-to=type=registry,ref="+arg+",mode=max,image-manifest=true,oci-mediatypes=true"))
 	}
 	for _, arg := range build.ArgsEnv.Value() {
 		addProxyValue(&build, arg)
