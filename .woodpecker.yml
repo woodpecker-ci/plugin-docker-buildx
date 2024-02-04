@@ -7,7 +7,7 @@ when:
 
 variables:
   - &golang "golang:1.21"
-  - &build_plugin "woodpeckerci/plugin-docker-buildx:3.0.0"
+  - &build_plugin "woodpeckerci/plugin-docker-buildx:3.0.1"
   - base_settings: &base_buildx_settings
       platforms: "linux/amd64,linux/arm64"
       dockerfile: Dockerfile.multiarch
