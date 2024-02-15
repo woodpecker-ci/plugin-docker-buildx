@@ -94,6 +94,9 @@ func commandBuild(build Build, dryrun bool) *exec.Cmd {
 	for _, arg := range append(defaultBuildArgs, build.Args.Value()...) {
 		args = append(args, "--build-arg", arg)
 	}
+	for _, secret := range build.Secrets.Value() {
+		args = append(args, "--secret", secret)
+	}
 	for _, host := range build.AddHost.Value() {
 		args = append(args, "--add-host", host)
 	}

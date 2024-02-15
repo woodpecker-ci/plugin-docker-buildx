@@ -69,6 +69,7 @@ type Build struct {
 	Platforms       cli.StringSlice // Docker build target platforms
 	Args            cli.StringSlice // Docker build args
 	ArgsEnv         cli.StringSlice // Docker build args from env
+	Secrets         cli.StringSlice // Docker build secret
 	Target          string          // Docker build target
 	Output          string          // Docker build output
 	Pull            bool            // Docker build pull

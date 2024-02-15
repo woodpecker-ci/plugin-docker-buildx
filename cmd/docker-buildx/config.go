@@ -183,6 +183,12 @@ func settingsFlags(settings *plugin.Settings) []cli.Flag {
 			Usage:       "forwards environment variables as custom arguments to the build",
 			Destination: &settings.Build.ArgsEnv,
 		},
+		&cli.StringSliceFlag{
+			Name:        "secrets",
+			EnvVars:     []string{"PLUGIN_SECRETS"},
+			Usage:       "sets custom secret arguments for the build",
+			Destination: &settings.Build.Secrets,
+		},
 		&cli.BoolFlag{
 			Name:        "quiet",
 			EnvVars:     []string{"PLUGIN_QUIET"},

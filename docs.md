@@ -8,6 +8,7 @@ containerImage: woodpeckerci/plugin-docker-buildx
 containerImageUrl: https://hub.docker.com/r/woodpeckerci/plugin-docker-buildx
 url: https://codeberg.org/woodpecker-plugins/docker-buildx
 ---
+
 Woodpecker CI plugin to build multiarch Docker images with buildx. This plugin is a fork of [thegeeklab/drone-docker-buildx](https://github.com/thegeeklab/drone-docker-buildx/) which itself is a fork of [drone-plugins/drone-docker](https://github.com/drone-plugins/drone-docker).
 
 ## Features
@@ -27,9 +28,8 @@ It will automatically generate buildkit configuration to use custom CA certifica
 
 ## Settings
 
-
 | Settings Name           | Default                       | Description                                        |
-| ------------------------- | ------------------------------- | ---------------------------------------------------- |
+| ----------------------- | ----------------------------- | -------------------------------------------------- |
 | `dry-run`               | `false`                       | disables docker push                               |
 | `repo`                  | _none_                        | sets repository name for the image (can be a list) |
 | `username`              | _none_                        | sets username to authenticates with                |
@@ -91,9 +91,8 @@ docker-build:
 
 ## Advanced Settings
 
-
 | Settings Name                       | Default           | Description                                                                                                                                       |
-| ------------------------------------- | ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ----------------------------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `mirror`                            | _none_            | sets a registry mirror to pull images                                                                                                             |
 | `storage_driver`                    | _none_            | sets the docker daemon storage driver                                                                                                             |
 | `storage_path`                      | `/var/lib/docker` | sets the docker daemon storage path                                                                                                               |
@@ -118,6 +117,7 @@ docker-build:
 | `default_labels`/`auto_labels`      | `true`            | sets docker image labels based on git information                                                                                                 |
 | `build_args`                        | _none_            | sets custom build arguments for the build                                                                                                         |
 | `build_args_from_env`               | _none_            | forwards environment variables as custom arguments to the build                                                                                   |
+| `secrets`                           | _none_            | Sets the build secrets for the build                                                                                                              |
 | `quiet`                             | `false`           | enables suppression of the build output                                                                                                           |
 | `target`                            | _none_            | sets the build target to use                                                                                                                      |
 | `cache_from`                        | _none_            | sets configuration for cache source                                                                                                               |
