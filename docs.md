@@ -43,6 +43,7 @@ It will automatically generate buildkit configuration to use custom CA certifica
 | `dockerfile`            | `Dockerfile`                  | sets dockerfile to use for the image build         |
 | `tag`/`tags`            | _none_                        | sets repository tags to use for the image          |
 | `platforms`             | _none_                        | sets target platform for build                     |
+| `provenance`            | _none_                        | sets provenance for build                          |
 
 ## auto_tag
 

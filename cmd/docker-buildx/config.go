@@ -349,5 +349,11 @@ func settingsFlags(settings *plugin.Settings) []cli.Flag {
 			Usage:       "AWS: whether to enable image scanning on push",
 			Destination: &settings.EcrScanOnPush,
 		},
+		&cli.StringFlag{
+			Name:        "provenance",
+			EnvVars:     []string{"PLUGIN_PROVENANCE"},
+			Usage:       "defines provenance setting",
+			Destination: &settings.Build.Provenance,
+		},
 	}
 }
