@@ -81,6 +81,7 @@ type Build struct {
 	NoCache         bool            // Docker build no-cache
 	AddHost         cli.StringSlice // Docker build add-host
 	Quiet           bool            // Docker build quiet
+	Epoch           int64           // Docker build epoch
 	Provenance      string          // Docker build provenance
 }
 

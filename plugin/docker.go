@@ -4,9 +4,11 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"strconv"
 	"strings"
 	"time"
 
+	"github.com/go-git/go-git/v5"
 	"github.com/urfave/cli/v2"
 )
 
@@ -61,14 +63,19 @@ func commandBuild(build Build, dryrun bool) *exec.Cmd {
 		"-f", build.Dockerfile,
 	}
 
+	// determine git epoch to define SOURCE_DATE_EPOCH build_arg
+	r, _ := git.PlainOpen(".")
+	ref, _ := r.Head()
+	iter, _ := r.Log(&git.LogOptions{From: ref.Hash()})
+	commit, _ := iter.Next()
+	build.Epoch = commit.Author.When.Unix()
+
 	defaultBuildArgs := []string{
 		fmt.Sprintf("DOCKER_IMAGE_CREATED=%s", time.Now().Format(time.RFC3339)),
+		fmt.Sprintf("SOURCE_DATE_EPOCH=%s", strconv.FormatInt(build.Epoch, 10)),
 	}
 
 	args = append(args, build.Context)
-	if !dryrun {
-		args = append(args, "--push")
-	}
 	if build.Compress {
 		args = append(args, "--compress")
 	}
@@ -103,8 +110,14 @@ func commandBuild(build Build, dryrun bool) *exec.Cmd {
 	if build.Target != "" {
 		args = append(args, "--target", build.Target)
 	}
-	if build.Output != "" {
-		args = append(args, "--output", build.Output)
+	if build.Output != "" && dryrun {
+		args = append(args, "--output", "type=image,rewrite-timestamp=true,"+build.Output)
+	} else if build.Output != "" && !dryrun {
+		args = append(args, "--output", "type=image,push=true,rewrite-timestamp=true"+build.Output)
+	} else if dryrun {
+		args = append(args, "--output", "type=image,rewrite-timestamp=true")
+	} else {
+		args = append(args, "--output", "type=image,push=true,rewrite-timestamp=true")
 	}
 	if build.Quiet {
 		args = append(args, "--quiet")
