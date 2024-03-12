@@ -187,22 +187,11 @@ func (p *Plugin) Validate() error {
 			p.settings.Build.Ref,
 			p.settings.Build.Branch,
 		) {
-			var tag []string
-			var err error
-
-			if p.settings.Build.TagsSuffix != "" {
-				tag, err = DefaultTagSuffix(
-					p.settings.Build.Ref,
-					p.settings.Build.TagsDefaultName,
-					p.settings.Build.TagsSuffix,
-				)
-			} else {
-				tag, err = DefaultTagSuffix(
-					p.settings.Build.Ref,
-					p.settings.Build.TagsSuffix,
-					"",
-				)
-			}
+			tag, err := DefaultTagSuffix(
+				p.settings.Build.Ref,
+				p.settings.Build.TagsDefaultName,
+				p.settings.Build.TagsSuffix,
+			)
 			if err != nil {
 				logrus.Printf("cannot build docker image for %s, invalid semantic version", p.settings.Build.Ref)
 				return err

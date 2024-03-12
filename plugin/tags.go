@@ -110,6 +110,6 @@ func stripTagPrefix(ref string) string {
 }
 
 func isSingleTag(tag string) bool {
-	// currently only filtering for separators, this could be improved...
-	return tag == "" || (!regexp.MustCompile(`[,\s]+`).MatchString(tag) && len(tag) <= 128)
+	// currently only filtering for seperators, this could be improoved...
+	return !regexp.MustCompile(`[,\s]+`).MatchString(tag) && len(tag) > 0 && len(tag) <= 128
 }
