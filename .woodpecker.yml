@@ -7,7 +7,8 @@ when:
 
 variables:
   - &golang "golang:1.22"
-  - &build_plugin "woodpeckerci/plugin-docker-buildx:3.1.0"
+  #- &build_plugin "woodpeckerci/plugin-docker-buildx:3.1.0"
+  - &build_plugin "woodpeckerci/plugin-docker-buildx:pull_132"
   - base_settings: &base_buildx_settings
       platforms: "linux/amd64,linux/arm64"
       dockerfile: Dockerfile.multiarch
@@ -77,9 +78,13 @@ steps:
   publish_pr_image:
     image: *build_plugin
     depends_on: test
+    pull: true
     settings:
+      auto_tag: true
+      default_tag: ""
+      dry_run: true
       <<: *base_buildx_settings
-      tag: pull_${CI_COMMIT_PULL_REQUEST}
+      # tag: pull_${CI_COMMIT_PULL_REQUEST}
       logins: *login_setting
     when:
       evaluate: 'CI_COMMIT_PULL_REQUEST_LABELS contains "build_pr_images"'
