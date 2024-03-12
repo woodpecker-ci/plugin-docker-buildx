@@ -63,16 +63,25 @@ func commandBuild(build Build, dryrun bool) *exec.Cmd {
 		"-f", build.Dockerfile,
 	}
 
-	// determine git epoch to define SOURCE_DATE_EPOCH build_arg
-	r, _ := git.PlainOpen(".")
-	ref, _ := r.Head()
-	iter, _ := r.Log(&git.LogOptions{From: ref.Hash()})
-	commit, _ := iter.Next()
-	build.Epoch = commit.Author.When.Unix()
+	var defaultBuildArgs []string
 
-	defaultBuildArgs := []string{
-		fmt.Sprintf("DOCKER_IMAGE_CREATED=%s", time.Now().Format(time.RFC3339)),
-		fmt.Sprintf("SOURCE_DATE_EPOCH=%s", strconv.FormatInt(build.Epoch, 10)),
+	if isGitRepository() {
+		// determine git epoch to define SOURCE_DATE_EPOCH build_arg
+		r, _ := git.PlainOpen(".")
+		ref, _ := r.Head()
+		iter, _ := r.Log(&git.LogOptions{From: ref.Hash()})
+		commit, _ := iter.Next()
+		build.Epoch = commit.Author.When.Unix()
+
+		defaultBuildArgs = []string{
+			fmt.Sprintf("DOCKER_IMAGE_CREATED=%s", time.Now().Format(time.RFC3339)),
+			fmt.Sprintf("SOURCE_DATE_EPOCH=%s", strconv.FormatInt(build.Epoch, 10)),
+		}
+	} else {
+		fmt.Println("INFO: no git repository detected, not setting SOURCE_DATE_EPOCH")
+		defaultBuildArgs = []string{
+			fmt.Sprintf("DOCKER_IMAGE_CREATED=%s", time.Now().Format(time.RFC3339)),
+		}
 	}
 
 	args = append(args, build.Context)
@@ -224,4 +233,14 @@ func commandDaemon(daemon Daemon) *exec.Cmd {
 // tag so that it can be extracted and displayed in the logs.
 func trace(cmd *exec.Cmd) {
 	fmt.Fprintf(os.Stdout, "+ %s\n", strings.Join(cmd.Args, " "))
+}
+
+func isGitRepository() bool {
+	_, err := os.Stat(".git")
+	if os.IsNotExist(err) {
+		return false
+	}
+	cmd := exec.Command("git", "rev-parse", "--is-inside-work-tree")
+	err = cmd.Run()
+	return err == nil
 }
