@@ -1,0 +1,36 @@
+when:
+  - event: [pull_request, tag, cron]
+  - event: push
+    branch:
+      - ${CI_REPO_DEFAULT_BRANCH}
+      - renovate/*
+
+steps:
+  lint-dockerfile:
+    image: hadolint/hadolint:v2.12.1-beta-alpine
+    depends_on: []
+    commands:
+      - hadolint --ignore DL3003 --ignore DL3018 Dockerfile
+    when:
+      path: "Dockerfile"
+
+  lint-markdown:
+    image: davidanson/markdownlint-cli2:v0.12.1
+    depends_on: []
+    commands:
+      - "markdownlint-cli2 *.{md,markdown}"
+    when:
+      path: "*.{md,markdown}"
+
+  lint-editorconfig:
+    depends_on: []
+    image: docker.io/mstruebing/editorconfig-checker:2.7.2
+    when:
+      event: pull_request
+
+  lint-format:
+    image: golang:1.22
+    depends_on: []
+    commands: make formatcheck
+    when:
+      event: pull_request

@@ -36,18 +36,6 @@ steps:
     depends_on: vendor
     commands: go test -cover ./...
 
-  lint-editorconfig:
-    image: docker.io/mstruebing/editorconfig-checker:2.7.2
-    when:
-      event: pull_request
-
-  lint-format:
-    image: *golang
-    depends_on: vendor
-    commands: make formatcheck
-    when:
-      event: pull_request
-
   publish-dryrun:
     image: *build_plugin
     depends_on: test
