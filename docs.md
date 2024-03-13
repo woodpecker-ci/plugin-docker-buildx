@@ -9,7 +9,8 @@ containerImageUrl: https://hub.docker.com/r/woodpeckerci/plugin-docker-buildx
 url: https://codeberg.org/woodpecker-plugins/docker-buildx
 ---
 
-Woodpecker CI plugin to build multiarch Docker images with buildx. This plugin is a fork of [thegeeklab/drone-docker-buildx](https://github.com/thegeeklab/drone-docker-buildx/) which itself is a fork of [drone-plugins/drone-docker](https://github.com/drone-plugins/drone-docker).
+Woodpecker CI plugin to build multiarch Docker images with buildx.
+This plugin is a fork of [thegeeklab/drone-docker-buildx](https://github.com/thegeeklab/drone-docker-buildx/) which itself is a fork of [drone-plugins/drone-docker](https://github.com/drone-plugins/drone-docker).
 
 ## Features
 
@@ -24,7 +25,7 @@ It will automatically generate buildkit configuration to use custom CA certifica
 - Custom `registry`/`logins` value is provided
 - File exists `/etc/docker/certs.d/<registry-value>/ca.crt`
 
-> NB! To mount custom CA you can use Woodpecker CI runner configuration environment `WOODPECKER_BACKEND_DOCKER_VOLUMES` with value `/etc/ssl/certs:/etc/ssl/certs:ro,/etc/docker/certs.d:/etc/docker/certs.d:ro`. And have created file `/etc/docker/certs.d/<registry-value>/ca.crt` with CA certificate on runner server host.
+To mount custom CA certificates, the Woodpecker env var `WOODPECKER_BACKEND_DOCKER_VOLUMES` with value `/etc/ssl/certs:/etc/ssl/certs:ro,/etc/docker/certs.d:/etc/docker/certs.d:ro` can be used.
 
 ## Settings
 
@@ -92,51 +93,51 @@ docker-build:
 
 ## Advanced Settings
 
-| Settings Name                       | Default           | Description                                                                                                                                       |
-| ----------------------------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `mirror`                            | _none_            | sets a registry mirror to pull images                                                                                                             |
-| `storage_driver`                    | _none_            | sets the docker daemon storage driver                                                                                                             |
-| `storage_path`                      | `/var/lib/docker` | sets the docker daemon storage path                                                                                                               |
-| `bip`                               | _none_            | allows the docker daemon to bride ip address                                                                                                      |
-| `mtu`                               | _none_            | sets docker daemon custom mtu setting                                                                                                             |
-| `custom_dns`                        | _none_            | sets custom docker daemon dns server                                                                                                              |
-| `custom_dns_search`                 | _none_            | sets custom docker daemon dns search domain                                                                                                       |
-| `insecure`                          | `false`           | allows the docker daemon to use insecure registries                                                                                               |
-| `ipv6`                              | `false`           | enables docker daemon IPv6 support                                                                                                                |
-| `experimental`                      | `false`           | enables docker daemon experimental mode                                                                                                           |
-| `debug`                             | `false`           | enables verbose debug mode for the docker daemon                                                                                                  |
-| `daemon_off`                        | `false`           | disables the startup of the docker daemon                                                                                                         |
-| `buildkit_debug`                    | `false`           | enables debug output of buildkit                                                                                                                  |
-| `buildkit_config`                   | _none_            | sets content of the docker[buildkit TOML config](https://github.com/moby/buildkit/blob/master/docs/buildkitd.toml.md)                             |
-| `buildkit_driveropt`                | _none_            | adds one or multiple`--driver-opt` buildx arguments for the default buildkit builder instance                                                     |
-| `tags_file`                         | _none_            | overrides the`tags` option with values in a file named `.tags`; multiple tags can be specified separated by a newline                             |
-| `context`                           | `.`               | sets the path of the build context to use                                                                                                         |
-| `auto_tag`                          | `false`           | generates tag names automatically based on git branch and git tag, tags supplied via`tags` are additionally added to the auto_tags without suffix |
-| `default_suffix"`/`auto_tag_suffix` | _none_            | generates tag names with the given suffix                                                                                                         |
-| `default_tag`                       | `latest`          | overrides the default tag name used when generating with`auto_tag` enabled                                                                        |
-| `label`/`labels`                    | _none_            | sets labels to use for the image in format`<name>=<value>`                                                                                        |
-| `default_labels`/`auto_labels`      | `true`            | sets docker image labels based on git information                                                                                                 |
-| `build_args`                        | _none_            | sets custom build arguments for the build                                                                                                         |
-| `build_args_from_env`               | _none_            | forwards environment variables as custom arguments to the build                                                                                   |
-| `secrets`                           | _none_            | Sets the build secrets for the build                                                                                                              |
-| `quiet`                             | `false`           | enables suppression of the build output                                                                                                           |
-| `target`                            | _none_            | sets the build target to use                                                                                                                      |
-| `cache_from`                        | _none_            | sets configuration for cache source                                                                                                               |
-| `cache_to`                          | _none_            | sets configuration for cache export                                                                                                               |
-| `cache_images`                      | _none_            | a list of images to use as cache.                                                                                                                 |
-| `pull_image`                        | `true`            | enforces to pull base image at build time                                                                                                         |
-| `compress`                          | `false`           | enables compression of the build context using gzip                                                                                               |
-| `config`                            | _none_            | sets content of the docker daemon json config                                                                                                     |
-| `purge`                             | `true`            | enables cleanup of the docker environment at the end of a build                                                                                   |
-| `no_cache`                          | `false`           | disables the usage of cached intermediate containers                                                                                              |
-| `add_host`                          | _none_            | sets additional host:ip mapping                                                                                                                   |
-| `output`                            | _none_            | sets build output in format`type=<type>[,<key>=<value>]`                                                                                          |
-| `logins`                            | _none_            | option to log into multiple registries                                                                                                            |
-| `env_file`                          | _none_            | load env vars from specified file                                                                                                                 |
-| `ecr_create_repository`             | `false`           | creates the ECR repository if it does not exist                                                                                                   |
-| `ecr_lifecycle_policy`              | _none_            | AWS ECR lifecycle policy                                                                                                                          |
-| `ecr_repository_policy`             | _none_            | AWS ECR repository policy                                                                                                                         |
-| `ecr_scan_on_push`                  | _none_            | AWS: whether to enable image scanning on push                                                                                                     |
+| Settings Name                      | Default           | Description                                                                                                                                          |
+| ---------------------------------- | ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `mirror`                           | _none_            | sets a registry mirror to pull images                                                                                                                |
+| `storage_driver`                   | _none_            | sets the docker daemon storage driver                                                                                                                |
+| `storage_path`                     | `/var/lib/docker` | sets the docker daemon storage path                                                                                                                  |
+| `bip`                              | _none_            | allows the docker daemon to bride ip address                                                                                                         |
+| `mtu`                              | _none_            | sets docker daemon custom mtu setting                                                                                                                |
+| `custom_dns`                       | _none_            | sets custom docker daemon dns server                                                                                                                 |
+| `custom_dns_search`                | _none_            | sets custom docker daemon dns search domain                                                                                                          |
+| `insecure`                         | `false`           | allows the docker daemon to use insecure registries                                                                                                  |
+| `ipv6`                             | `false`           | enables docker daemon IPv6 support                                                                                                                   |
+| `experimental`                     | `false`           | enables docker daemon experimental mode                                                                                                              |
+| `debug`                            | `false`           | enables verbose debug mode for the docker daemon                                                                                                     |
+| `daemon_off`                       | `false`           | disables the startup of the docker daemon                                                                                                            |
+| `buildkit_debug`                   | `false`           | enables debug output of buildkit                                                                                                                     |
+| `buildkit_config`                  | _none_            | sets content of the docker [buildkit TOML config](https://github.com/moby/buildkit/blob/master/docs/buildkitd.toml.md)                               |
+| `buildkit_driveropt`               | _none_            | adds one or multiple `--driver-opt` buildx arguments for the default buildkit builder instance                                                       |
+| `tags_file`                        | _none_            | overrides the `tags` option with values in a file named `.tags`; multiple tags can be specified separated by a newline                               |
+| `context`                          | `.`               | sets the path of the build context to use                                                                                                            |
+| `auto_tag`                         | `false`           | generates tag names automatically based on git branch and git tag, tags supplied via `tags` are additionally added to the `auto_tags` without suffix |
+| `default_suffix`/`auto_tag_suffix` | _none_            | generates tag names with the given suffix                                                                                                            |
+| `default_tag`                      | `latest`          | overrides the default tag name used when generating with `auto_tag` enabled                                                                          |
+| `label`/`labels`                   | _none_            | sets labels to use for the image in format `<name>=<value>`                                                                                          |
+| `default_labels`/`auto_labels`     | `true`            | sets docker image labels based on git information                                                                                                    |
+| `build_args`                       | _none_            | sets custom build arguments for the build                                                                                                            |
+| `build_args_from_env`              | _none_            | forwards environment variables as custom arguments to the build                                                                                      |
+| `secrets`                          | _none_            | Sets the build secrets for the build                                                                                                                 |
+| `quiet`                            | `false`           | enables suppression of the build output                                                                                                              |
+| `target`                           | _none_            | sets the build target to use                                                                                                                         |
+| `cache_from`                       | _none_            | sets configuration for cache source                                                                                                                  |
+| `cache_to`                         | _none_            | sets configuration for cache export                                                                                                                  |
+| `cache_images`                     | _none_            | a list of images to use as cache.                                                                                                                    |
+| `pull_image`                       | `true`            | enforces to pull base image at build time                                                                                                            |
+| `compress`                         | `false`           | enables compression of the build context using gzip                                                                                                  |
+| `config`                           | _none_            | sets content of the docker daemon json config                                                                                                        |
+| `purge`                            | `true`            | enables cleanup of the docker environment at the end of a build                                                                                      |
+| `no_cache`                         | `false`           | disables the usage of cached intermediate containers                                                                                                 |
+| `add_host`                         | _none_            | sets additional host:ip mapping                                                                                                                      |
+| `output`                           | _none_            | sets build output in format`type=<type>[,<key>=<value>]`                                                                                             |
+| `logins`                           | _none_            | option to log into multiple registries                                                                                                               |
+| `env_file`                         | _none_            | load env vars from specified file                                                                                                                    |
+| `ecr_create_repository`            | `false`           | creates the ECR repository if it does not exist                                                                                                      |
+| `ecr_lifecycle_policy`             | _none_            | AWS ECR lifecycle policy                                                                                                                             |
+| `ecr_repository_policy`            | _none_            | AWS ECR repository policy                                                                                                                            |
+| `ecr_scan_on_push`                 | _none_            | AWS: whether to enable image scanning on push                                                                                                        |
 
 ## Multi registry push example
 

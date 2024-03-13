@@ -299,6 +299,7 @@ func Test_isSingleTag(t *testing.T) {
 		{"_wierd.but-ok1", true},
 		{"latest ", false},
 		{"latest,next", false},
+		{"", true}, // important to allow omitting 'latest' tag when using auto_tag: true
 		// more tests to be added, once the validation is more powerful
 	}
 

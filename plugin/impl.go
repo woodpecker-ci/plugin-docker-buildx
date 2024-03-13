@@ -187,7 +187,10 @@ func (p *Plugin) Validate() error {
 			p.settings.Build.Ref,
 			p.settings.Build.Branch,
 		) {
-			tag, err := DefaultTagSuffix(
+			var tag []string
+			var err error
+
+			tag, err = DefaultTagSuffix(
 				p.settings.Build.Ref,
 				p.settings.Build.TagsDefaultName,
 				p.settings.Build.TagsSuffix,
