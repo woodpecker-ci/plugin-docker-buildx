@@ -10,22 +10,21 @@ variables:
   - &build_plugin "woodpeckerci/plugin-docker-buildx:3.1.0"
   - base_settings: &base_buildx_settings
       platforms: "linux/amd64,linux/arm64"
-      dockerfile: Dockerfile.multiarch
+      dockerfile: Dockerfile
       auto_tag: true
       repo: woodpeckerci/plugin-docker-buildx,codeberg.org/woodpecker-plugins/docker-buildx
-  - &login_setting
-      # Default DockerHub login
-      - registry: https://index.docker.io/v1/
-        username:
-          from_secret: docker_username
-        password:
-          from_secret: docker_password
-      # Additional Codeberg login
-      - registry: https://codeberg.org
-        username:
-          from_secret: cb_username
-        password:
-          from_secret: cb_password
+  - &login_setting # Default DockerHub login
+    - registry: https://index.docker.io/v1/
+      username:
+        from_secret: docker_username
+      password:
+        from_secret: docker_password
+    # Additional Codeberg login
+    - registry: https://codeberg.org
+      username:
+        from_secret: cb_username
+      password:
+        from_secret: cb_password
 
 steps:
   vendor:
