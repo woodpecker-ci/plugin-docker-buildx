@@ -1,6 +1,6 @@
 name: Default
 about: Use this template if nothing seems to work.
-title: ''
+title: ""
 body:
   - type: markdown
     attributes:
@@ -10,7 +10,7 @@ body:
     id: content
     attributes:
       label: ❔ What happened
-      description:  Simply ask your question here.
+      description: Simply ask your question here.
       placeholder: Tell us what you want to know...
     validations:
       required: true
