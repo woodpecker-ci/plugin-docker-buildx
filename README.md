@@ -33,3 +33,7 @@ Images are available on [Dockerhub](https://hub.docker.com/r/woodpeckerci/plugin
 ## License
 
 This project is licensed under the Apache-2.0 License - see the [LICENSE](https://codeberg.org/woodpecker-plugins/plugin-docker-buildx/src/branch/main/LICENSE) file for details.
+
+## Maintainers
+
+This plugin is maintained by @6543 and @pat-s.
