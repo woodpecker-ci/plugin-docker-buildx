@@ -119,10 +119,8 @@ func commandBuild(build Build, dryrun bool) *exec.Cmd {
 	if build.Target != "" {
 		args = append(args, "--target", build.Target)
 	}
-	if build.Output != "" && dryrun {
-		args = append(args, "--output", "type=image,rewrite-timestamp=true,"+build.Output)
-	} else if build.Output != "" && !dryrun {
-		args = append(args, "--output", "type=image,push=true,rewrite-timestamp=true"+build.Output)
+	if build.Output != "" {
+		args = append(args, "--output", build.Output)
 	} else if dryrun {
 		args = append(args, "--output", "type=image,rewrite-timestamp=true")
 	} else {
@@ -150,6 +148,17 @@ func commandBuild(build Build, dryrun bool) *exec.Cmd {
 	}
 
 	return exec.Command(dockerExe, args...)
+}
+
+// helper function to create the docker push commands.
+func commandsPush(build Build) []*exec.Cmd {
+	cmd := make([]*exec.Cmd, 0, 1)
+	for _, tag := range build.Tags.Value() {
+		for _, repo := range build.Repo.Value() {
+			cmd = append(cmd, exec.Command("docker", "push", fmt.Sprintf("%s:%s", repo, tag)))
+		}
+	}
+	return cmd
 }
 
 // helper function to add proxy values from the environment

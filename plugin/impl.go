@@ -390,6 +390,10 @@ func (p *Plugin) Execute() error {
 	cmds = append(cmds, commandBuilder(p.settings.Daemon))
 	cmds = append(cmds, commandBuildx())
 	cmds = append(cmds, commandBuild(p.settings.Build, p.settings.Dryrun)) // docker build
+	if !p.settings.Dryrun && p.settings.Build.Output != "" &&
+		!strings.Contains(p.settings.Build.Output, ",push=") {
+		cmds = append(cmds, commandsPush(p.settings.Build)...) // docker push
+	}
 
 	// execute all commands in batch mode.
 	for _, cmd := range cmds {
