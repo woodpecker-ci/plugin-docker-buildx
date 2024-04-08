@@ -15,7 +15,7 @@ steps:
       path: "Dockerfile"
 
   lint-markdown:
-    image: davidanson/markdownlint-cli2:v0.12.1
+    image: davidanson/markdownlint-cli2:v0.13.0
     depends_on: []
     commands:
       - "markdownlint-cli2 *.{md,markdown}"
